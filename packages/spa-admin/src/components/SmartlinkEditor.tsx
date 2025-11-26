@@ -57,9 +57,9 @@ export function SmartlinkEditor({ linkId }: Props) {
   };
 
   const toggleContextField = (field: ContextField) => {
-    const current = editedCore.context_shape || [];
+    const current: ContextField[] = editedCore.context_shape || [];
     const updated = current.includes(field)
-      ? current.filter((f) => f !== field)
+      ? current.filter((f: ContextField) => f !== field)
       : [...current, field];
     updateField('context_shape', updated);
   };
