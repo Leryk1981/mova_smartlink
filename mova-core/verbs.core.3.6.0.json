@@ -1,0 +1,286 @@
+{
+  "@context": "https://mova.org/context/verbs.core.3.6.0.jsonld",
+  "mova_version": "3.6.0",
+  "registry_version": "1.0.0",
+  "verbs": [
+    {
+      "name": "http_fetch",
+      "kind": "action",
+      "category": "io.http",
+      "stability": "stable",
+      "summary": "Perform an outbound HTTP request and store the response in the context.",
+      "description": "Send an HTTP request to a URL using the chosen method, headers and body, and write status/headers/body into the workflow context.",
+      "with_contract": {
+        "required": [
+          "url"
+        ],
+        "fields": {
+          "url": "Target URL (absolute URI or template expression).",
+          "method": "HTTP method; default GET.",
+          "headers": "Optional object with HTTP headers.",
+          "timeout_ms": "Optional timeout for the request in milliseconds.",
+          "body": "Arbitrary request body (string or JSON-serialisable value).",
+          "json": "Shorthand for providing a JSON body; implies appropriate Content-Type.",
+          "idempotency_key": "Idempotency key to avoid duplicate side effects."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/0/then/properties/with"
+      },
+      "notes": "Primary verb for integrating with external HTTP APIs."
+    },
+    {
+      "name": "call",
+      "kind": "action",
+      "category": "execution.service",
+      "stability": "stable",
+      "summary": "Call a named service and task with optional input.",
+      "description": "Delegate work to a named service and task; the runtime maps this to a real transport or worker.",
+      "with_contract": {
+        "required": [
+          "service",
+          "task"
+        ],
+        "fields": {
+          "service": "Logical name of the service to call.",
+          "task": "Task or operation name within the service.",
+          "input": "Input payload to pass to the task.",
+          "timeout_ms": "Optional timeout for the call in milliseconds."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/1/then/properties/with"
+      },
+      "notes": "Higher-level abstraction over concrete integrations; complements http_fetch."
+    },
+    {
+      "name": "if",
+      "kind": "control",
+      "category": "flow.control",
+      "stability": "stable",
+      "summary": "Conditionally execute one of two blocks of steps.",
+      "description": "Evaluate a condition and run either the 'then' steps or the 'else' steps.",
+      "with_contract": {
+        "required": [
+          "condition",
+          "then"
+        ],
+        "fields": {
+          "condition": "Condition determining which branch to execute.",
+          "then": "Array of steps to execute when the condition is true.",
+          "else": "Optional array of steps to execute when the condition is false."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/2/then/properties/with"
+      },
+      "notes": "Use for simple branching based on data or results."
+    },
+    {
+      "name": "switch",
+      "kind": "control",
+      "category": "flow.control",
+      "stability": "stable",
+      "summary": "Select a branch based on the value of an expression.",
+      "description": "Inspect a value and choose one of several cases to execute, or a default branch.",
+      "with_contract": {
+        "required": [
+          "on",
+          "cases"
+        ],
+        "fields": {
+          "on": "Expression or value to inspect.",
+          "cases": "Array of case objects, each defining a match and steps.",
+          "default": "Optional case to run when no explicit case matches."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/3/then/properties/with"
+      },
+      "notes": "Prefer switch when branching on discrete values or types."
+    },
+    {
+      "name": "parallel",
+      "kind": "control",
+      "category": "flow.concurrency",
+      "stability": "stable",
+      "summary": "Execute multiple branches in parallel and wait for all.",
+      "description": "Run several step sequences in parallel and wait according to the chosen strategy.",
+      "with_contract": {
+        "required": [
+          "steps"
+        ],
+        "fields": {
+          "steps": "Array of step sequences to run in parallel.",
+          "strategy": "Strategy for handling results and errors (e.g., 'all', 'any').",
+          "max_concurrency": "Optional limit on concurrent branches."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/4/then/properties/with"
+      },
+      "notes": "Be careful when multiple branches update the same context keys."
+    },
+    {
+      "name": "race",
+      "kind": "control",
+      "category": "flow.concurrency",
+      "stability": "stable",
+      "summary": "Run branches in parallel and keep the first successful one.",
+      "description": "Execute several step sequences concurrently and keep the first successful result.",
+      "with_contract": {
+        "required": [
+          "steps"
+        ],
+        "fields": {
+          "steps": "Array of step sequences to execute concurrently.",
+          "cancel_remaining": "Whether to cancel other branches when one succeeds; default true.",
+          "timeout_ms": "Optional overall timeout for the race."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/5/then/properties/with"
+      },
+      "notes": "Useful for hedged requests against multiple replicas or strategies."
+    },
+    {
+      "name": "template",
+      "kind": "action",
+      "category": "data.rendering",
+      "stability": "stable",
+      "summary": "Render a text template using variables.",
+      "description": "Render template text with variables to produce messages or documents.",
+      "with_contract": {
+        "required": [
+          "text"
+        ],
+        "fields": {
+          "text": "Template text to render.",
+          "vars": "Variables object to inject into the template.",
+          "engine": "Optional template engine hint; runtime-specific."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/6/then/properties/with"
+      },
+      "notes": "Typically used before sending notifications or documents."
+    },
+    {
+      "name": "transform",
+      "kind": "action",
+      "category": "data.transform",
+      "stability": "stable",
+      "summary": "Transform data in the context or between objects.",
+      "description": "Apply simple mapping, formatting or expressions to reshape data.",
+      "with_contract": {
+        "required": [],
+        "fields": {
+          "operation": "High-level operation hint (e.g., 'map', 'merge', 'format').",
+          "set": "Object of key/value pairs to set in the context.",
+          "source": "Optional explicit source object or path.",
+          "format": "Optional format hint (e.g., 'json', 'text', 'date').",
+          "expression": "Optional expression to evaluate for complex transformations.",
+          "target": "Optional explicit target path or object name for the result."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/7/then/properties/with"
+      },
+      "notes": "Glue between inputs, external calls and final outputs; keep operations small and composable."
+    },
+    {
+      "name": "assert",
+      "kind": "action",
+      "category": "validation",
+      "stability": "stable",
+      "summary": "Check a condition and fail the workflow if it is not met.",
+      "description": "Evaluate a condition and stop the workflow with an error if it fails.",
+      "with_contract": {
+        "required": [],
+        "fields": {
+          "condition": "Boolean expression or reference that must be true.",
+          "that": "Optional human-readable description of the expectation.",
+          "message": "Error message when the assertion fails."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/8/then/properties/with"
+      },
+      "notes": "Place assertions near boundaries (before side effects or final outputs)."
+    },
+    {
+      "name": "emit_event",
+      "kind": "action",
+      "category": "events",
+      "stability": "stable",
+      "summary": "Emit a named event with an optional payload.",
+      "description": "Emit an event that the runtime delivers to its event system (queue, topic, webhook).",
+      "with_contract": {
+        "required": [
+          "event"
+        ],
+        "fields": {
+          "event": "Event name describing what happened.",
+          "payload": "Optional structured payload for the event.",
+          "target": "Optional target channel or topic; runtime-specific."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/9/then/properties/with"
+      },
+      "notes": "Provides a clean boundary between workflows and downstream consumers."
+    },
+    {
+      "name": "log",
+      "kind": "utility",
+      "category": "util.logging",
+      "stability": "stable",
+      "summary": "Write a log entry with a message and optional structured data.",
+      "description": "Append a log record to the workflow trace at a given level with optional data.",
+      "with_contract": {
+        "required": [
+          "message"
+        ],
+        "fields": {
+          "message": "Human-readable log message.",
+          "level": "Log level hint (e.g., 'debug', 'info', 'warn', 'error').",
+          "data": "Optional structured data to include in the log entry."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/10/then/properties/with"
+      },
+      "notes": "Production runtimes should correlate log entries with envelope id, step id and run id."
+    },
+    {
+      "name": "sleep",
+      "kind": "utility",
+      "category": "util.timing",
+      "stability": "stable",
+      "summary": "Pause the workflow for a given amount of time.",
+      "description": "Suspend execution for the specified duration in milliseconds.",
+      "with_contract": {
+        "required": [
+          "ms"
+        ],
+        "fields": {
+          "ms": "Duration to sleep in milliseconds."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/11/then/properties/with"
+      },
+      "notes": "Building block for simple pacing or delays; more complex backoff lives in retry policies."
+    },
+    {
+      "name": "call_envelope",
+      "kind": "action",
+      "category": "execution.composition",
+      "stability": "stable",
+      "summary": "Invoke another MOVA envelope as a sub-workflow.",
+      "description": "Execute another envelope identified by env:* and optionally pass input and timeout.",
+      "with_contract": {
+        "required": [
+          "target_envelope_id"
+        ],
+        "fields": {
+          "target_envelope_id": "Identifier of the envelope to call (env:*).",
+          "input": "Input data to pass to the called envelope.",
+          "timeout_ms": "Optional timeout for the call in milliseconds."
+        },
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/12/then/properties/with"
+      },
+      "notes": "Enables composition and reuse of envelopes as building blocks."
+    },
+    {
+      "name": "plugin:*",
+      "kind": "extension",
+      "category": "extension.plugin",
+      "stability": "stable",
+      "summary": "Extension verbs implemented by plugins, named with the 'plugin:' prefix.",
+      "description": "Namespace for custom verbs (names matching '^plugin:[a-z][a-z0-9_]*$'); their contracts are validated by the plugin at runtime.",
+      "with_contract": {
+        "required": [],
+        "fields": {},
+        "schema_source": "https://mova.org/schema/envelope.3.6.0.schema.json#/definitions/step/allOf/13/then/properties/with"
+      },
+      "notes": "Plugin authors should publish JSON Schemas for their verb parameters so that tools can validate and assist users."
+    }
+  ]
+}

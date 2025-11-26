@@ -1,0 +1,621 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.org/schema/envelope.3.6.0.schema.json",
+  "title": "MOVA Envelope 3.6.0 (Minimal Core)",
+  "description": "Minimal MOVA envelope schema v3.6.0 focusing on essential workflow keys. Optional metadata and global definitions have been moved out to external schemas for simplicity and compatibility with the Schema/Envelope/Instance structure.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mova_version",
+    "envelope_id",
+    "category",
+    "title",
+    "summary",
+    "plan"
+  ],
+  "properties": {
+    "mova_version": {
+      "type": "string",
+      "pattern": "^3\\.6\\.(0|[1-9]\\d*)$",
+      "description": "Semantic version constrained to 3.6.x line."
+    },
+    "envelope_id": {
+      "type": "string",
+      "pattern": "^env:[a-z0-9:_\\-]+$",
+      "description": "Unique identifier for this workflow envelope (must start with 'env:')."
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Routing or permission category for this workflow (e.g., 'data_processing', 'api_integration')."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable title of the workflow."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Brief description of what the workflow does."
+    },
+    "context": {
+      "type": "object",
+      "description": "Free-form input data for the workflow (parameters, initial state, etc.).",
+      "additionalProperties": true,
+      "default": {}
+    },
+    "plan": {
+      "type": "object",
+      "description": "Execution plan of the workflow, containing objectives and the ordered steps.",
+      "additionalProperties": false,
+      "required": [
+        "steps"
+      ],
+      "properties": {
+        "objectives": {
+          "type": "array",
+          "description": "High-level objectives of this workflow (for documentation).",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered list of steps to execute. Nested arrays in control-flow verbs represent branches.",
+          "items": { "$ref": "#/definitions/step" }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "retryPolicy": {
+      "type": "object",
+      "description": "Policy for retrying a failed operation.",
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum number of retry attempts (0 means no retries)."
+        },
+        "backoff_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Base delay in milliseconds between retries."
+        },
+        "jitter": {
+          "type": "boolean",
+          "description": "Whether to introduce random jitter in retry delays."
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "description": "An individual step in the workflow (either an action or a control-flow container).",
+      "additionalProperties": false,
+      "required": [ "id", "verb" ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique step identifier within this workflow."
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable title of the step (for documentation)."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Brief summary of the step's purpose."
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional developer note or implementation detail for this step."
+        },
+        "verb": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": [
+                "http_fetch",
+                "call",
+                "call_envelope",
+                "template",
+                "transform",
+                "parallel",
+                "race",
+                "assert",
+                "emit_event",
+                "log",
+                "sleep",
+                "if",
+                "switch"
+              ],
+              "description": "Built-in MOVA verbs (core, auxiliary, and flow control)."
+            },
+            {
+              "type": "string",
+              "pattern": "^plugin:[a-z][a-z0-9_]*$",
+              "minLength": 8,
+              "description": "Custom plugin verb (must begin with 'plugin:' and follow with plugin name)."
+            }
+          ]
+        },
+        "with": {
+          "type": "object",
+          "description": "Parameters for this step's verb (structure varies by verb)."
+        },
+        "retry_policy": {
+          "$ref": "#/definitions/retryPolicy",
+          "description": "Retry policy for this step (overrides any default retry behavior)."
+        },
+        "actorRoleId": {
+          "type": "string",
+          "pattern": "^role:[a-z0-9:_\\-]+$",
+          "description": "ID of the actor/role responsible for this step (must correspond to a role defined in the global catalog)."
+        },
+        "resourceId": {
+          "type": "string",
+          "pattern": "^res:[a-z0-9:_\\-]+$",
+          "description": "ID of a resource to be used in this step (must correspond to a resource in the global catalog)."
+        },
+        "inputDataSchemaId": {
+          "type": "string",
+          "pattern": "^ds:[a-z0-9:_\\-]+$",
+          "description": "ID of the expected input data schema (must correspond to a data schema in the global catalog)."
+        },
+        "outputDataSchemaId": {
+          "type": "string",
+          "pattern": "^ds:[a-z0-9:_\\-]+$",
+          "description": "ID of the expected output data schema (must correspond to a data schema in the global catalog)."
+        },
+        "stateFrom": {
+          "type": "string",
+          "pattern": "^st:[a-z0-9:_\\-]+$",
+          "description": "ID of the state from which this step transitions (must exist in global state catalog)."
+        },
+        "stateTo": {
+          "type": "string",
+          "pattern": "^st:[a-z0-9:_\\-]+$",
+          "description": "ID of the state to which this step transitions (must exist in global state catalog)."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "verb": { "const": "http_fetch" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "url" ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "pattern": "^(https?://|\\$\\{)",
+                    "description": "Target URL for the HTTP request (must be absolute URI or template expression)."
+                  },
+                  "method": {
+                    "type": "string",
+                    "enum": [ "GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS" ],
+                    "default": "GET",
+                    "description": "HTTP method to use for the request."
+                  },
+                  "headers": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "HTTP headers for the request (these supplement any global default headers)."
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Timeout for the HTTP request in milliseconds."
+                  },
+                  "body": {
+                    "description": "Request body (as a string or any JSON-serializable value)."
+                  },
+                  "json": {
+                    "description": "Shorthand for providing a JSON body (implies appropriate Content-Type)."
+                  },
+                  "idempotency_key": {
+                    "type": "string",
+                    "description": "Idempotency key for this HTTP request (to avoid duplicate effects)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "call" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "service", "task" ],
+                "properties": {
+                  "service": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the service to call (e.g., a microservice identifier)."
+                  },
+                  "task": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the operation or task to invoke on the service."
+                  },
+                  "input": {
+                    "description": "Input data to pass to the service call."
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Timeout for the service call in milliseconds."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "if" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "condition", "then" ],
+                "properties": {
+                  "condition": {
+                    "description": "Condition to evaluate (boolean or expression string)."
+                  },
+                  "then": {
+                    "type": "array",
+                    "description": "Steps to execute if the condition is true.",
+                    "items": { "$ref": "#/definitions/step" }
+                  },
+                  "else": {
+                    "type": "array",
+                    "description": "Steps to execute if the condition is false (optional).",
+                    "items": { "$ref": "#/definitions/step" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "switch" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "on", "cases" ],
+                "properties": {
+                  "on": {
+                    "description": "Expression or value to switch on."
+                  },
+                  "cases": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "List of case branches for the switch.",
+                    "items": {
+                      "type": "object",
+                      "required": [ "when", "steps" ],
+                      "properties": {
+                        "when": {
+                          "description": "Value or condition that triggers this case."
+                        },
+                        "steps": {
+                          "type": "array",
+                          "items": { "$ref": "#/definitions/step" }
+                        }
+                      }
+                    }
+                  },
+                  "default": {
+                    "type": "array",
+                    "description": "Fallback steps if no case matches (optional).",
+                    "items": { "$ref": "#/definitions/step" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "parallel" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "steps" ],
+                "properties": {
+                  "steps": {
+                    "type": "array",
+                    "minItems": 2,
+                    "description": "Array of steps to run in parallel (all branches started together).",
+                    "items": { "$ref": "#/definitions/step" }
+                  },
+                  "strategy": {
+                    "type": "string",
+                    "enum": [ "all", "allSettled" ],
+                    "default": "all",
+                    "description": "Synchronization strategy: 'all' (all branches must succeed) or 'allSettled' (wait for all branches, allowing failures)."
+                  },
+                  "max_concurrency": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Maximum number of parallel branches to execute at once (optional limit)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "race" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "steps" ],
+                "properties": {
+                  "steps": {
+                    "type": "array",
+                    "minItems": 2,
+                    "description": "Array of steps to execute concurrently; the first branch to succeed wins.",
+                    "items": { "$ref": "#/definitions/step" }
+                  },
+                  "cancel_remaining": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If true, cancel the other branches when one branch succeeds."
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Optional overall timeout for the race (fails if no branch succeeds in time)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "template" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": true,
+                "required": [ "text" ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Template text with placeholders (e.g., 'Hello {{name}}')."
+                  },
+                  "vars": {
+                    "type": "object",
+                    "description": "Variables to inject into the template placeholders."
+                  },
+                  "engine": {
+                    "type": "string",
+                    "enum": [ "mustache", "handlebars", "jinja2" ],
+                    "default": "mustache",
+                    "description": "Template engine to use for rendering."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "transform" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "operation": {
+                    "type": "string",
+                    "enum": [ "set", "parse", "map", "filter", "reduce" ],
+                    "description": "Type of transformation operation."
+                  },
+                  "set": {
+                    "type": "object",
+                    "description": "Values to set (used for 'set' operation)."
+                  },
+                  "source": {
+                    "description": "Source data to transform (used for parse/map/filter/reduce operations)."
+                  },
+                  "format": {
+                    "type": "string",
+                    "enum": [ "json", "xml", "yaml", "csv" ],
+                    "description": "Data format to parse (for 'parse' operation)."
+                  },
+                  "expression": {
+                    "type": "string",
+                    "description": "Expression or query for transformation (e.g., JSONPath or JMESPath for filtering/mapping)."
+                  },
+                  "target": {
+                    "type": "string",
+                    "description": "Name of the variable or context location to store the result."
+                  }
+                },
+                "anyOf": [
+                  { "required": [ "operation", "set" ] },
+                  { "required": [ "operation", "source" ] }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "assert" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "condition": {
+                    "description": "Assertion condition (boolean or expression) that must be true."
+                  },
+                  "that": {
+                    "type": [ "string", "boolean", "number", "object", "array", "null" ],
+                    "description": "Alternate form: a literal value that must be truthy."
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Custom message to include if the assertion fails."
+                  }
+                },
+                "anyOf": [
+                  { "required": [ "condition" ] },
+                  { "required": [ "that" ] }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "emit_event" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "event" ],
+                "properties": {
+                  "event": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Name of the event to emit."
+                  },
+                  "payload": {
+                    "type": "object",
+                    "description": "Payload data to include with the event."
+                  },
+                  "target": {
+                    "type": "string",
+                    "description": "Target system or channel for the event (optional)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "log" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "message" ],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Log message text."
+                  },
+                  "level": {
+                    "type": "string",
+                    "enum": [ "debug", "info", "warn", "error" ],
+                    "default": "info",
+                    "description": "Log severity level."
+                  },
+                  "data": {
+                    "type": "object",
+                    "description": "Additional structured data to log."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "sleep" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "ms" ],
+                "properties": {
+                  "ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 600000,
+                    "description": "Duration to sleep in milliseconds (0 to 600000 ms)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "const": "call_envelope" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "target_envelope_id" ],
+                "properties": {
+                  "target_envelope_id": {
+                    "type": "string",
+                    "pattern": "^env:[a-z0-9:_\\-]+$",
+                    "description": "Identifier of the envelope to call (must start with 'env:')."
+                  },
+                  "input": {
+                    "description": "Input data to pass to the called envelope."
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Timeout for the envelope call in milliseconds."
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "verb": { "type": "string", "pattern": "^plugin:" } } },
+          "then": {
+            "required": [ "with" ],
+            "properties": {
+              "with": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Parameters for a custom plugin step (validated by the plugin at runtime)."
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

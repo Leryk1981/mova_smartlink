@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build_and_test:
+    name: Build, Lint & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build core-smartlink
+        run: npm run build
+
+      - name: Lint all packages
+        run: npm run lint
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Verify MOVA core files unchanged
+        run: |
+          # Ensure mova-core/ directory is not modified
+          if [ -n "$(git status --porcelain mova-core/)" ]; then
+            echo "ERROR: mova-core/ files were modified during CI"
+            git status mova-core/
+            exit 1
+          fi
+
+  build_spa:
+    name: Build SPA
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build core-smartlink (dependency)
+        run: npm run build
+
+      - name: Build SPA
+        working-directory: packages/spa-admin
+        run: npm run build
+
+      - name: Check build artifacts
+        run: |
+          if [ ! -d "packages/spa-admin/dist" ]; then
+            echo "ERROR: SPA build failed - dist directory not found"
+            exit 1
+          fi
+          echo "✓ SPA built successfully"
+

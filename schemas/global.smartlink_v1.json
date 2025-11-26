@@ -1,0 +1,95 @@
+{
+  "mova_version": "3.6.0",
+  "roles": [
+    {
+      "id": "role:smartlink_admin",
+      "name": "Smartlink Administrator",
+      "description": "Може створювати, редагувати та активувати SmartlinkCore-записи.",
+      "tags": [
+        "smartlink",
+        "admin"
+      ],
+      "meta": {
+        "artifact_kind": "role"
+      }
+    },
+    {
+      "id": "role:marketing_owner",
+      "name": "Marketing Owner",
+      "description": "Відповідає за маркетингові правила й може редагувати smartlink правила в межах домена.",
+      "tags": [
+        "smartlink",
+        "marketing"
+      ],
+      "meta": {
+        "artifact_kind": "role"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "res:kv_smartlink_rules",
+      "name": "KV namespace for SmartlinkCore",
+      "kind": "kv_namespace",
+      "uri": "urn:mova:kv:smartlink_rules",
+      "description": "Простір KV для декларативних правил SmartlinkCore (ds:smartlink_rules_v1).",
+      "tags": [
+        "smartlink",
+        "kv",
+        "rules"
+      ],
+      "meta": {
+        "artifact_kind": "resource"
+      }
+    },
+    {
+      "id": "res:worker_smartlink_edge",
+      "name": "Smartlink Edge Worker",
+      "kind": "cloudflare_worker",
+      "uri": "urn:mova:worker:smartlink_edge",
+      "description": "Edge-воркер, що обробляє /s/:linkId, викликає env:smartlink_default_v1 та виконує редіректи.",
+      "tags": [
+        "smartlink",
+        "worker",
+        "edge"
+      ],
+      "meta": {
+        "artifact_kind": "resource"
+      }
+    },
+    {
+      "id": "res:queue_smartlink_events",
+      "name": "Smartlink Events Queue",
+      "kind": "queue",
+      "uri": "urn:mova:queue:smartlink_events",
+      "description": "Черга для подій smartlink.redirected та подібних подій спостережуваності.",
+      "tags": [
+        "smartlink",
+        "events",
+        "analytics"
+      ],
+      "meta": {
+        "artifact_kind": "resource"
+      }
+    }
+  ],
+  "dataSchemas": [
+    {
+      "id": "ds:smartlink_rules_v1",
+      "name": "Smartlink Rules v1",
+      "schema_uri": "https://mova.org/schema/ecommerce/smartlink/ds.smartlink_rules_v1.schema.json",
+      "version": "1.0.0",
+      "description": "JSON Schema для декларативних правил SmartlinkCore для одного link_id.",
+      "tags": [
+        "smartlink",
+        "rules",
+        "edge_routing"
+      ],
+      "meta": {
+        "artifact_kind": "data_schema"
+      }
+    }
+  ],
+  "states": [],
+  "extensions": {}
+}

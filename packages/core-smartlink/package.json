@@ -1,0 +1,32 @@
+{
+  "name": "@mova/core-smartlink",
+  "version": "1.0.0",
+  "description": "Pure TypeScript library for Smartlink rules evaluation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsx --test src/**/*.test.ts",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "smartlink",
+    "routing",
+    "mova",
+    "edge"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "@types/node": "^20.10.5",
+    "tsx": "^4.7.0"
+  }
+}
+

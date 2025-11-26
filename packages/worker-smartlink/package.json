@@ -1,0 +1,31 @@
+{
+  "name": "@mova/worker-smartlink",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for Smartlink edge routing",
+  "type": "module",
+  "main": "./src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "test": "vitest",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "smartlink",
+    "cloudflare",
+    "worker",
+    "edge"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@mova/core-smartlink": "*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^3.84.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}
+

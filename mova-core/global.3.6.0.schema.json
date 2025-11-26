@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.org/schema/global.3.6.0.schema.json",
+  "title": "MOVA Global Catalog 3.6.0",
+  "description": "Global catalog of roles, resources, data schemas and states for MOVA 3.6.x.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "@context": {
+      "description": "Optional JSON-LD context for semantic mapping of roles, resources, dataSchemas and states to external vocabularies.",
+      "oneOf": [
+        {
+          "type": "string",
+          "format": "uri-reference"
+        },
+        {
+          "type": "object"
+        },
+        {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uri-reference"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "mova_version": {
+      "type": "string",
+      "description": "MOVA core version this global catalog is compatible with (3.6.x line).",
+      "pattern": "^3\\.6\\.(0|[1-9]\\d*)$"
+    },
+    "roles": {
+      "type": "array",
+      "description": "List of roles (actors) participating in MOVA workflows.",
+      "items": {
+        "$ref": "#/definitions/role"
+      }
+    },
+    "resources": {
+      "type": "array",
+      "description": "List of resources used by MOVA workflows (HTTP endpoints, queues, storage, documents, etc.).",
+      "items": {
+        "$ref": "#/definitions/resource"
+      }
+    },
+    "dataSchemas": {
+      "type": "array",
+      "description": "List of data schemas (JSON Schema descriptors) used across MOVA workflows.",
+      "items": {
+        "$ref": "#/definitions/dataSchemaRef"
+      }
+    },
+    "states": {
+      "type": "array",
+      "description": "List of business states used to track lifecycle of entities and workflows.",
+      "items": {
+        "$ref": "#/definitions/state"
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Optional extension block for project- or domain-specific metadata.",
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "tagList": {
+      "type": "array",
+      "description": "List of tags for grouping and filtering catalog entries.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "role": {
+      "type": "object",
+      "description": "An actor role participating in MOVA workflows (human, service, system).",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Role identifier (role:*).",
+          "pattern": "^role:[a-z0-9:_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name of the role.",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional detailed description of the role."
+        },
+        "group": {
+          "type": "string",
+          "description": "Optional grouping key (e.g., 'system', 'human', 'service')."
+        },
+        "tags": {
+          "$ref": "#/definitions/tagList"
+        },
+        "meta": {
+          "type": "object",
+          "description": "Optional metadata for tools and runtimes.",
+          "additionalProperties": true
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "description": "A resource used by MOVA workflows (HTTP endpoint, queue, storage, external system, etc.).",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Resource identifier (res:*).",
+          "pattern": "^res:[a-z0-9:_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name of the resource.",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "description": "Optional kind of resource (e.g., http_endpoint, queue, storage_bucket)."
+        },
+        "uri": {
+          "type": "string",
+          "description": "Optional URI or URI template for this resource.",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional detailed description of the resource."
+        },
+        "tags": {
+          "$ref": "#/definitions/tagList"
+        },
+        "meta": {
+          "type": "object",
+          "description": "Optional metadata for tools and runtimes (e.g., auth profile, rate limits, schemas).",
+          "additionalProperties": true
+        }
+      }
+    },
+    "dataSchemaRef": {
+      "type": "object",
+      "description": "Descriptor of a JSON Schema used as a data schema in MOVA.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "schema_uri"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Data schema identifier (ds:*).",
+          "pattern": "^ds:[a-z0-9:_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name of the data schema.",
+          "minLength": 1
+        },
+        "schema_uri": {
+          "type": "string",
+          "description": "URI or path to the JSON Schema document defining this data schema.",
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "description": "Optional semantic version of the data schema itself."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional detailed description of the data schema."
+        },
+        "tags": {
+          "$ref": "#/definitions/tagList"
+        },
+        "meta": {
+          "type": "object",
+          "description": "Optional metadata for tools and runtimes.",
+          "additionalProperties": true
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "description": "A business state used to track lifecycle of entities and workflows.",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "State identifier (st:*).",
+          "pattern": "^st:[a-z0-9:_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable name of the state.",
+          "minLength": 1
+        },
+        "group": {
+          "type": "string",
+          "description": "Optional grouping key (e.g., 'lifecycle', 'error')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional detailed description of the state."
+        },
+        "tags": {
+          "$ref": "#/definitions/tagList"
+        },
+        "meta": {
+          "type": "object",
+          "description": "Optional metadata for tools and runtimes.",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.org/schema/meta-model.3.6.0.schema.json",
+  "title": "MOVA Meta-Model 3.6.0",
+  "description": "Meta-level description of MOVA core artifacts and identifier namespaces for the 3.6.x line. This schema validates a single meta-model document used by tools and runtimes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "meta_model_version",
+    "mova_core_version",
+    "id_prefixes",
+    "artifact_kinds"
+  ],
+  "properties": {
+    "meta_model_version": {
+      "type": "string",
+      "description": "Semantic version of this meta-model document itself (not the MOVA core version).",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "mova_core_version": {
+      "type": "string",
+      "description": "MOVA core version this meta-model describes (3.6.x line).",
+      "pattern": "^3\\.6\\.(0|[1-9]\\d*)$"
+    },
+    "id_prefixes": {
+      "type": "object",
+      "description": "Definitions of identifier prefixes used across MOVA artifacts.",
+      "required": ["env", "ds", "role", "res", "st"],
+      "properties": {
+        "env": {
+          "allOf": [
+            { "$ref": "#/definitions/idPrefixDescriptor" },
+            {
+              "properties": {
+                "name": { "const": "envelope" },
+                "prefix": { "const": "env:" },
+                "pattern": { "const": "^env:[a-z0-9:_\\-]+$" }
+              }
+            }
+          ]
+        },
+        "ds": {
+          "allOf": [
+            { "$ref": "#/definitions/idPrefixDescriptor" },
+            {
+              "properties": {
+                "name": { "const": "data_schema" },
+                "prefix": { "const": "ds:" },
+                "pattern": { "const": "^ds:[a-z0-9:_\\-]+$" }
+              }
+            }
+          ]
+        },
+        "role": {
+          "allOf": [
+            { "$ref": "#/definitions/idPrefixDescriptor" },
+            {
+              "properties": {
+                "name": { "const": "role" },
+                "prefix": { "const": "role:" },
+                "pattern": { "const": "^role:[a-z0-9:_\\-]+$" }
+              }
+            }
+          ]
+        },
+        "res": {
+          "allOf": [
+            { "$ref": "#/definitions/idPrefixDescriptor" },
+            {
+              "properties": {
+                "name": { "const": "resource" },
+                "prefix": { "const": "res:" },
+                "pattern": { "const": "^res:[a-z0-9:_\\-]+$" }
+              }
+            }
+          ]
+        },
+        "st": {
+          "allOf": [
+            { "$ref": "#/definitions/idPrefixDescriptor" },
+            {
+              "properties": {
+                "name": { "const": "state" },
+                "prefix": { "const": "st:" },
+                "pattern": { "const": "^st:[a-z0-9:_\\-]+$" }
+              }
+            }
+          ]
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/idPrefixDescriptor"
+      }
+    },
+    "artifact_kinds": {
+      "type": "array",
+      "description": "Core MOVA artifact kinds and how they relate to identifier prefixes.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/artifactKindDescriptor"
+      }
+    },
+    "core_schemas": {
+      "type": "object",
+      "description": "Optional mapping to core JSON Schemas that implement this meta-model (envelope, global, etc.).",
+      "additionalProperties": false,
+      "properties": {
+        "envelope_schema_id": {
+          "type": "string",
+          "description": "Canonical $id of the envelope core schema (e.g., https://mova.org/schema/envelope.3.6.0.schema.json)."
+        },
+        "global_schema_id": {
+          "type": "string",
+          "description": "Canonical $id of the global catalogs core schema (e.g., https://mova.org/schema/global.3.6.0.schema.json)."
+        }
+      }
+    },
+    "extensions": {
+      "type": "object",
+      "description": "Optional extension block for project-specific meta-data (JSON-LD contexts, domain taxonomy, tool hints, etc.). Kept intentionally open.",
+      "additionalProperties": true
+    }
+  },
+  "definitions": {
+    "idPrefixDescriptor": {
+      "type": "object",
+      "description": "Descriptor of a single identifier prefix (e.g., env:, ds:, role:).",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "prefix",
+        "pattern"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Logical name of the prefix (envelope, data_schema, role, resource, state, ...)."
+        },
+        "prefix": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Literal prefix used in IDs (e.g., 'env:', 'ds:')."
+        },
+        "pattern": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Regular expression (as a string) describing valid identifiers for this prefix."
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of this identifier family."
+        },
+        "examples": {
+          "type": "array",
+          "description": "Optional examples of concrete identifiers using this prefix.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "artifactKindDescriptor": {
+      "type": "object",
+      "description": "Descriptor of a MOVA artifact kind and its relation to identifier prefixes.",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "id_prefix"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Artifact kind name.",
+          "enum": [
+            "data_schema",
+            "envelope",
+            "global_catalog",
+            "instance",
+            "template_set"
+          ]
+        },
+        "id_prefix": {
+          "description": "Primary identifier prefix used by this artifact kind (or null if not prefix-based).",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "description": "Short human-readable summary of this artifact kind."
+        },
+        "description": {
+          "type": "string",
+          "description": "Longer description of the role of this artifact kind in MOVA."
+        },
+        "references": {
+          "type": "array",
+          "description": "List of identifier prefix keys that this artifact kind is allowed to reference (e.g., ['ds', 'role', 'res', 'st']).",
+          "items": {
+            "type": "string",
+            "enum": ["env", "ds", "role", "res", "st"]
+          },
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string",
+          "description": "Optional implementation notes or tool hints."
+        }
+      }
+    }
+  }
+}

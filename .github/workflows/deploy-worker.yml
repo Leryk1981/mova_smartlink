@@ -1,0 +1,79 @@
+name: Deploy Worker
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy_worker:
+    name: Deploy to Cloudflare Workers
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: ${{ inputs.environment || 'production' }}
+      url: https://smartlink-worker.${{ secrets.CLOUDFLARE_SUBDOMAIN }}.workers.dev
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build core-smartlink
+        run: npm run build
+
+      - name: Lint worker
+        run: npm run lint:worker
+
+      - name: Verify MOVA core files unchanged
+        run: |
+          if [ -n "$(git status --porcelain mova-core/ schemas/)" ]; then
+            echo "ERROR: MOVA core files or schemas were modified"
+            exit 1
+          fi
+
+      - name: Deploy to Cloudflare Workers
+        working-directory: packages/worker-smartlink
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          # Determine environment based on input or tag
+          if [ "${{ github.event_name }}" == "push" ] && [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            ENV="production"
+          else
+            ENV="${{ inputs.environment }}"
+          fi
+          
+          echo "Deploying to environment: $ENV"
+          npx wrangler deploy --env $ENV
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Worker deployed successfully"
+          echo "📦 Version: ${{ github.ref_name || github.sha }}"
+          echo "🌍 Environment: ${{ inputs.environment || 'production' }}"
+          echo ""
+          echo "⚠️ Remember to configure:"
+          echo "  - KV namespace bindings in Cloudflare dashboard"
+          echo "  - Environment variables if needed"
+          echo "  - Custom routes/domains if applicable"
+

@@ -1,0 +1,272 @@
+{
+  "@context": "https://mova.org/context/global.core.3.6.0.jsonld",
+  "mova_version": "3.6.0",
+  "roles": [
+    {
+      "id": "role:system",
+      "name": "System",
+      "description": "MOVA runtime and infrastructure components acting on behalf of the platform.",
+      "group": "system",
+      "tags": [
+        "core",
+        "technical"
+      ],
+      "meta": {
+        "default": true
+      }
+    },
+    {
+      "id": "role:template_author",
+      "name": "Template Author",
+      "description": "Person or team designing MOVA schemas and envelopes.",
+      "group": "human",
+      "tags": [
+        "core",
+        "authoring"
+      ],
+      "meta": {
+        "permissions_hint": "can_edit_templates"
+      }
+    },
+    {
+      "id": "role:operator",
+      "name": "Operator",
+      "description": "Person responsible for operating MOVA runtimes and monitoring executions.",
+      "group": "human",
+      "tags": [
+        "core",
+        "operations"
+      ],
+      "meta": {
+        "permissions_hint": "can_manage_runtime"
+      }
+    },
+    {
+      "id": "role:end_user",
+      "name": "End User",
+      "description": "Final human user who triggers workflows and provides input data.",
+      "group": "human",
+      "tags": [
+        "core",
+        "end_user"
+      ],
+      "meta": {
+        "permissions_hint": "can_run_templates"
+      }
+    },
+    {
+      "id": "role:service_integration",
+      "name": "Service Integration",
+      "description": "External or internal service acting as a technical actor in workflows.",
+      "group": "system",
+      "tags": [
+        "core",
+        "integration"
+      ],
+      "meta": {
+        "permissions_hint": "service_account"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "id": "res:runtime_default",
+      "name": "Default MOVA Runtime",
+      "kind": "runtime",
+      "uri": "urn:mova:runtime:default",
+      "description": "Abstract entrypoint representing the default MOVA execution environment.",
+      "tags": [
+        "core",
+        "runtime"
+      ],
+      "meta": {
+        "role_hint": "role:system"
+      }
+    },
+    {
+      "id": "res:queue_default",
+      "name": "Default Queue",
+      "kind": "queue",
+      "uri": "urn:mova:queue:default",
+      "description": "Abstract queue for background and asynchronous tasks.",
+      "tags": [
+        "core",
+        "queue"
+      ],
+      "meta": {
+        "delivery_guarantee": "at-least-once"
+      }
+    },
+    {
+      "id": "res:storage_default",
+      "name": "Default Storage Bucket",
+      "kind": "storage_bucket",
+      "uri": "urn:mova:storage:default",
+      "description": "Abstract storage for persisted workflow data and attachments.",
+      "tags": [
+        "core",
+        "storage"
+      ],
+      "meta": {
+        "retention_policy": "unspecified"
+      }
+    },
+    {
+      "id": "res:http_outbound_default",
+      "name": "Default Outbound HTTP",
+      "kind": "http_endpoint",
+      "uri": "urn:mova:http:outbound:default",
+      "description": "Abstract outbound HTTP capability used by http_fetch-like verbs.",
+      "tags": [
+        "core",
+        "http"
+      ],
+      "meta": {
+        "auth_profile": "unspecified"
+      }
+    }
+  ],
+  "dataSchemas": [
+    {
+      "id": "ds:envelope_core_v3_6_0",
+      "name": "MOVA Envelope Core 3.6.0",
+      "schema_uri": "https://mova.org/schema/envelope.3.6.0.schema.json",
+      "version": "3.6.0",
+      "description": "Core JSON Schema describing MOVA envelopes; registered here to allow tools to treat envelopes as data.",
+      "tags": [
+        "core",
+        "mova",
+        "envelope"
+      ],
+      "meta": {
+        "artifact_kind": "envelope"
+      }
+    },
+    {
+      "id": "ds:global_core_v3_6_0",
+      "name": "MOVA Global Catalog Core 3.6.0",
+      "schema_uri": "https://mova.org/schema/global.3.6.0.schema.json",
+      "version": "3.6.0",
+      "description": "Core JSON Schema describing the MOVA global catalog.",
+      "tags": [
+        "core",
+        "mova",
+        "global"
+      ],
+      "meta": {
+        "artifact_kind": "global_catalog"
+      }
+    },
+    {
+      "id": "ds:meta_model_v1_0_0",
+      "name": "MOVA Meta-Model 1.0.0",
+      "schema_uri": "https://mova.org/schema/meta-model.3.6.0.schema.json",
+      "version": "1.0.0",
+      "description": "Meta-level schema defining MOVA artifact kinds and identifier prefixes.",
+      "tags": [
+        "core",
+        "meta"
+      ],
+      "meta": {
+        "artifact_kind": "meta_model"
+      }
+    }
+  ],
+  "states": [
+    {
+      "id": "st:draft",
+      "name": "Draft",
+      "group": "lifecycle",
+      "description": "Initial editable state before any formal submission.",
+      "tags": [
+        "core",
+        "lifecycle"
+      ],
+      "meta": {
+        "terminal": false
+      }
+    },
+    {
+      "id": "st:pending",
+      "name": "Pending",
+      "group": "lifecycle",
+      "description": "Waiting for processing, decision or external action.",
+      "tags": [
+        "core",
+        "lifecycle"
+      ],
+      "meta": {
+        "terminal": false
+      }
+    },
+    {
+      "id": "st:active",
+      "name": "Active",
+      "group": "lifecycle",
+      "description": "Workflow or entity is currently in progress or in use.",
+      "tags": [
+        "core",
+        "lifecycle"
+      ],
+      "meta": {
+        "terminal": false
+      }
+    },
+    {
+      "id": "st:completed",
+      "name": "Completed",
+      "group": "lifecycle",
+      "description": "Workflow or entity has successfully reached its intended end state.",
+      "tags": [
+        "core",
+        "lifecycle"
+      ],
+      "meta": {
+        "terminal": true
+      }
+    },
+    {
+      "id": "st:failed",
+      "name": "Failed",
+      "group": "technical",
+      "description": "Workflow or entity ended with an unrecoverable error.",
+      "tags": [
+        "core",
+        "error"
+      ],
+      "meta": {
+        "terminal": true
+      }
+    },
+    {
+      "id": "st:cancelled",
+      "name": "Cancelled",
+      "group": "technical",
+      "description": "Workflow or entity was explicitly stopped before completion.",
+      "tags": [
+        "core",
+        "cancellation"
+      ],
+      "meta": {
+        "terminal": true
+      }
+    }
+  ],
+  "extensions": {
+    "domains": {
+      "default_domains": [
+        "social",
+        "ecommerce",
+        "logistics"
+      ],
+      "description": "Suggested high-level domains for template sets. This core catalog itself stays domain-agnostic."
+    },
+    "jsonld": {
+      "context_profile": "mova-global-core-3.6.0",
+      "status": "reserved"
+    },
+    "notes": {
+      "description": "This is the minimal, domain-neutral global catalog. Domain packs (social, ecommerce, logistics, etc.) should extend it rather than replace it."
+    }
+  }
+}

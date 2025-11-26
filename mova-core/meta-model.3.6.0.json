@@ -1,0 +1,137 @@
+{
+  "meta_model_version": "1.0.0",
+  "mova_core_version": "3.6.0",
+  "id_prefixes": {
+    "env": {
+      "name": "envelope",
+      "prefix": "env:",
+      "pattern": "^env:[a-z0-9:_\\-]+$",
+      "description": "Executable workflow definitions (scenario documents) identified by env:* ids.",
+      "examples": [
+        "env:personal_profile_to_buergergeld_v1",
+        "env:smartlink_default_v1",
+        "env:edge-routing-v1"
+      ]
+    },
+    "ds": {
+      "name": "data_schema",
+      "prefix": "ds:",
+      "pattern": "^ds:[a-z0-9:_\\-]+$",
+      "description": "JSON Schema identifiers that define the shape and constraints of data objects.",
+      "examples": [
+        "ds:personal_profile_v1_de",
+        "ds:buergergeld_antrag_v1",
+        "ds:smartlink_rules_v1"
+      ]
+    },
+    "role": {
+      "name": "role",
+      "prefix": "role:",
+      "pattern": "^role:[a-z0-9:_\\-]+$",
+      "description": "Actor roles participating in MOVA workflows (humans, services, systems).",
+      "examples": [
+        "role:system",
+        "role:case_worker",
+        "role:template_author"
+      ]
+    },
+    "res": {
+      "name": "resource",
+      "prefix": "res:",
+      "pattern": "^res:[a-z0-9:_\\-]+$",
+      "description": "External or internal resources used by envelopes (HTTP endpoints, queues, storage, documents, etc.).",
+      "examples": [
+        "res:google_sheets_profile",
+        "res:cloudflare_worker_smartlink",
+        "res:queue_daily_digest"
+      ]
+    },
+    "st": {
+      "name": "state",
+      "prefix": "st:",
+      "pattern": "^st:[a-z0-9:_\\-]+$",
+      "description": "Business states used to track the lifecycle of entities and workflows.",
+      "examples": [
+        "st:draft",
+        "st:submitted",
+        "st:approved",
+        "st:rejected"
+      ]
+    }
+  },
+  "artifact_kinds": [
+    {
+      "kind": "data_schema",
+      "id_prefix": "ds",
+      "summary": "JSON Schema documents that define the structure and constraints of data objects.",
+      "description": "Data schemas are authored and versioned independently from envelopes. They are registered in the MOVA global catalog under dataSchemas[] with ids starting with 'ds:' and a schema_uri pointing to the actual JSON Schema file.",
+      "references": [],
+      "notes": "Typical examples include ds:personal_profile_v1_de and ds:buergergeld_antrag_v1."
+    },
+    {
+      "kind": "envelope",
+      "id_prefix": "env",
+      "summary": "Executable workflow definitions (plans of steps) that move data through verbs.",
+      "description": "Each envelope describes a scenario via plan.steps[]. Steps may refer to roles, resources, data schemas and states using their ids from the global catalog. At runtime an envelope is combined with a global catalog and an input context.",
+      "references": [
+        "ds",
+        "role",
+        "res",
+        "st"
+      ],
+      "notes": "env:* ids are the primary handles for runtimes, schedulers and tools when selecting which scenario to run."
+    },
+    {
+      "kind": "global_catalog",
+      "id_prefix": null,
+      "summary": "Shared registry of roles, resources, data schemas and states used by envelopes.",
+      "description": "The global catalog document itself is not prefix-based, but its entries are: roles use 'role:', resources use 'res:', dataSchemas use 'ds:' and states use 'st:'. Envelopes resolve these ids at execution time.",
+      "references": [
+        "ds",
+        "role",
+        "res",
+        "st"
+      ],
+      "notes": "Typically, one global catalog is active per execution environment, providing a consistent set of roles, resources, schemas and states."
+    },
+    {
+      "kind": "instance",
+      "id_prefix": null,
+      "summary": "Concrete JSON documents representing data conforming to a schema or an execution trace of an envelope.",
+      "description": "Instances live in project-level folders. A data instance usually conforms to exactly one ds:* schema. A run instance may record the input context, intermediate step outputs and final result of executing an envelope.",
+      "references": [
+        "ds",
+        "env"
+      ],
+      "notes": "Tools may store the claimed schema id and/or envelope id inside instance metadata to support validation and inspection."
+    },
+    {
+      "kind": "template_set",
+      "id_prefix": null,
+      "summary": "Minimal packages that bundle schemas, envelopes and example instances for a domain task.",
+      "description": "Template sets organise MOVA artifacts by domain (social, e-commerce, logistics, etc.). A typical set contains one or more ds:* schemas, one or more env:* envelopes and a small number of example instances used for documentation and tests.",
+      "references": [
+        "ds",
+        "env"
+      ],
+      "notes": "Template sets are the main unit for publishing and discovery in tools such as MOVA Workbench or a template marketplace."
+    }
+  ],
+  "core_schemas": {
+    "envelope_schema_id": "https://mova.org/schema/envelope.3.6.0.schema.json",
+    "global_schema_id": "https://mova.org/schema/global.3.6.0.schema.json"
+  },
+  "extensions": {
+    "jsonld": {
+      "reserved": true,
+      "comment": "Reserved lane for future JSON-LD @context definitions for schemas and global catalogs."
+    },
+    "domains": {
+      "kinds": [
+        "social",
+        "ecommerce",
+        "logistics"
+      ]
+    }
+  }
+}

@@ -1,0 +1,81 @@
+name: Deploy Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/spa-admin/**'
+      - 'packages/core-smartlink/**'
+      - '.github/workflows/deploy-pages.yml'
+
+jobs:
+  deploy_pages:
+    name: Deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    
+    environment:
+      name: production
+      url: https://${{ secrets.CLOUDFLARE_PAGES_PROJECT }}.pages.dev
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build core-smartlink
+        run: npm run build
+
+      - name: Lint SPA
+        run: npm run lint:spa
+
+      - name: Build SPA
+        working-directory: packages/spa-admin
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          if [ ! -d "packages/spa-admin/dist" ]; then
+            echo "ERROR: SPA dist directory not found"
+            exit 1
+          fi
+          
+          # Check for essential files
+          if [ ! -f "packages/spa-admin/dist/index.html" ]; then
+            echo "ERROR: index.html not found in dist"
+            exit 1
+          fi
+          
+          echo "✓ Build output verified"
+          ls -lh packages/spa-admin/dist/
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+          directory: packages/spa-admin/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
+      - name: Deployment summary
+        run: |
+          echo "✅ SPA deployed to Cloudflare Pages"
+          echo "📦 Commit: ${{ github.sha }}"
+          echo "🌐 URL: https://${{ secrets.CLOUDFLARE_PAGES_PROJECT }}.pages.dev"
+          echo ""
+          echo "💡 Tips:"
+          echo "  - Configure custom domain in Cloudflare Pages dashboard"
+          echo "  - Update API base URL in production build if needed"
+          echo "  - Set up preview deployments for PRs"
+

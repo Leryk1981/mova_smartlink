@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ds:smartlink_rules_v1",
+  "title": "Smartlink Rules v1",
+  "description": "Правила маршрутизації для одного smartlink (link_id) у домені Smartlink.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "link_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\-:.]+$",
+      "description": "Технічний ідентифікатор smartlink (частина URL, ключ у KV)."
+    },
+    "purpose": {
+      "type": "string",
+      "description": "Людинозрозумілий опис призначення smartlink."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "archived"
+      ],
+      "description": "Поточний стан smartlink у панелі керування."
+    },
+    "context_shape": {
+      "type": "array",
+      "description": "Список полів контексту, які реально використовує це правило (для UI і валідації).",
+      "items": {
+        "type": "string",
+        "enum": [
+          "country",
+          "lang",
+          "device",
+          "utm.source",
+          "utm.campaign",
+          "utm.medium",
+          "utm.term",
+          "utm.content"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "rules": {
+      "type": "array",
+      "description": "Упорядкований список правил. Перше, що співпало — перемагає.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Внутрішній ID правила (для редагування та логів)."
+          },
+          "label": {
+            "type": "string",
+            "description": "Назва гілки/правила для маркетолога та аналітики."
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Опційний явний пріоритет. Чим менше число, тим раніше перевірка."
+          },
+          "when": {
+            "type": "object",
+            "description": "Умови по нормалізованому контексту.",
+            "properties": {
+              "country": {
+                "description": "Коди країн, для яких правило діє.",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "lang": {
+                "description": "Мови інтерфейсу/браузера.",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "device": {
+                "description": "Тип пристрою (mobile / desktop тощо).",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "utm": {
+                "type": "object",
+                "description": "Фільтри по UTM-параметрах.",
+                "properties": {
+                  "source": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "campaign": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "medium": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "term": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "content": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "target": {
+            "type": "string",
+            "description": "Логічна ціль (ідентифікатор цілі або прямий URL)."
+          }
+        },
+        "required": [
+          "when",
+          "target"
+        ]
+      },
+      "minItems": 0
+    },
+    "fallback_target": {
+      "type": "string",
+      "description": "Логічна ціль або URL, якщо жодне правило не спрацювало."
+    },
+    "meta": {
+      "type": "object",
+      "description": "Технічні метадані для версіонування й аудиту.",
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "created_by": {
+          "type": "string"
+        },
+        "updated_by": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "link_id",
+    "status",
+    "rules",
+    "fallback_target"
+  ]
+}
