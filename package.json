@@ -10,6 +10,7 @@
     "dev:worker": "npm run dev --workspace=packages/worker-smartlink",
     "dev:spa": "npm run dev --workspace=packages/spa-admin",
     "build": "npm run build --workspace=packages/core-smartlink",
+    "build:pages": "npm run build --workspace=packages/core-smartlink && npm run build --workspace=packages/spa-admin",
     "build:all": "npm run build --workspaces --if-present",
     "test": "npm run test --workspace=packages/core-smartlink",
     "test:all": "npm run test --workspaces --if-present",

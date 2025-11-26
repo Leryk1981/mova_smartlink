@@ -19,10 +19,13 @@ jobs:
   deploy_worker:
     name: Deploy to Cloudflare Workers
     runs-on: ubuntu-latest
-    
+
+    env:
+      CLOUDFLARE_SUBDOMAIN: ${{ secrets.CLOUDFLARE_SUBDOMAIN }}
+
     environment:
       name: ${{ inputs.environment || 'production' }}
-      url: https://smartlink-worker.${{ secrets.CLOUDFLARE_SUBDOMAIN }}.workers.dev
+      url: https://smartlink-worker.${{ env.CLOUDFLARE_SUBDOMAIN }}.workers.dev
 
     steps:
       - name: Checkout repository
