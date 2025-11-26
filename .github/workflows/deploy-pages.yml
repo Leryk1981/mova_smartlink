@@ -35,15 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build core-smartlink
-        run: npm run build
-
       - name: Lint SPA
         run: npm run lint:spa
 
-      - name: Build SPA
-        working-directory: packages/spa-admin
-        run: npm run build
+      - name: Build Pages assets
+        run: npm run build:pages
 
       - name: Verify build output
         run: |
