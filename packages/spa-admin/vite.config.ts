@@ -7,14 +7,17 @@ export default defineConfig({
   server: {
     port: 3000,
     proxy: {
-      // Proxy API requests to Worker during development
-      '/api': {
+      // Proxy ONLY /api and /s to Worker during development
+      // DO NOT proxy /src (that's Vite's source files)
+      '^/api/.*': {
         target: 'http://localhost:8787',
         changeOrigin: true,
+        rewrite: (path) => path,
       },
-      '/s': {
+      '^/s/.*': {
         target: 'http://localhost:8787',
         changeOrigin: true,
+        rewrite: (path) => path,
       },
     },
   },
