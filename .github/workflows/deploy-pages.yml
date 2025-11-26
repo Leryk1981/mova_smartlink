@@ -14,10 +14,13 @@ jobs:
   deploy_pages:
     name: Deploy to Cloudflare Pages
     runs-on: ubuntu-latest
-    
+
+    env:
+      CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}
+
     environment:
       name: production
-      url: https://${{ secrets.CLOUDFLARE_PAGES_PROJECT }}.pages.dev
+      url: https://${{ env.CLOUDFLARE_PAGES_PROJECT }}.pages.dev
 
     steps:
       - name: Checkout repository
@@ -32,15 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build core-smartlink
-        run: npm run build
-
       - name: Lint SPA
         run: npm run lint:spa
 
-      - name: Build SPA
-        working-directory: packages/spa-admin
-        run: npm run build
+      - name: Build Pages assets
+        run: npm run build:pages
 
       - name: Verify build output
         run: |
