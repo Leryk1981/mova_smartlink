@@ -34,10 +34,16 @@ export function errorResponse(message: string, status = 500): Response {
  * Create redirect response
  */
 export function redirectResponse(url: string, status = 302): Response {
+  const location = sanitizeHeaderValue(url);
+
+  if (!location) {
+    return errorResponse('Invalid redirect URL', 400);
+  }
+
   return new Response(null, {
     status,
     headers: {
-      'location': url,
+      'location': location,
     },
   });
 }
@@ -67,5 +73,12 @@ function getErrorName(status: number): string {
     case 500: return 'Internal Server Error';
     default: return 'Error';
   }
+}
+
+/**
+ * Sanitize header values to prevent invalid characters
+ */
+function sanitizeHeaderValue(value: string): string {
+  return value.replace(/[\r\n]+/g, '').trim();
 }
 
