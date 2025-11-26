@@ -23,4 +23,7 @@ vars = { ENVIRONMENT = "development" }
 # Production configuration
 [env.production]
 vars = { ENVIRONMENT = "production" }
+kv_namespaces = [
+  { binding = "KV_SMARTLINK_RULES", id = "141d7655fc754038a088dedbedbe522c", preview_id = "141d7655fc754038a088dedbedbe522c" }
+]
 
