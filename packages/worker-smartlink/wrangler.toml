@@ -5,8 +5,8 @@ compatibility_date = "2024-11-01"
 # KV namespace for smartlink rules
 [[kv_namespaces]]
 binding = "KV_SMARTLINK_RULES"
-id = "your_kv_namespace_id_here"
-preview_id = "your_preview_kv_namespace_id_here"
+id = "141d7655fc754038a088dedbedbe522c"
+preview_id = "141d7655fc754038a088dedbedbe522c"
 
 # Queue for observability events (optional for MVP)
 # [[queues.producers]]
