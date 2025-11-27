@@ -159,22 +159,45 @@ Output directory: `packages/spa-admin/dist`
 
 ### Error: "is an invalid header value" or "Headers.append" error
 
-**Problem**: API token is not set, has invalid format, or contains extra spaces/newlines.
+**Problem**: API token contains whitespace, newlines, or other invisible characters.
 
-**Solution**: 
+**Quick Fix - Use Token Cleaner Script**:
+
+```powershell
+# Windows PowerShell
+.\scripts\clean-token.ps1
+```
+
+```bash
+# Linux/Mac
+./scripts/clean-token.sh
+```
+
+The script will:
+1. Clean your token from whitespace/newlines
+2. Validate format
+3. Copy cleaned token to clipboard
+4. Show instructions
+
+See [scripts/README.md](../scripts/README.md) for details.
+
+**Manual Fix**: 
 1. **Check if secret exists**: Go to GitHub → Settings → Secrets → Actions
 2. **Verify token format**:
    - Should be a single line (no newlines)
-   - Usually starts with `cloudflare_api_token_` or similar
+   - Usually starts with letters/numbers
    - No spaces before/after
 3. **Regenerate token** in Cloudflare:
    - Delete old token in Cloudflare Dashboard
    - Create new token (see Step 1.2 above)
-   - When copying, ensure no extra whitespace
+   - **Triple-click** on token to select all
+   - Ctrl+C to copy
+   - Paste into Notepad first to verify no extra lines
+   - Copy from Notepad to GitHub Secret
 4. **Update secret in GitHub**:
    - Delete old secret
-   - Create new one with fresh token
-   - Paste carefully (Ctrl+V, no manual typing)
+   - Create new one with cleaned token
+   - Use Ctrl+V to paste (don't type manually)
 
 **Example of CORRECT token**:
 ```

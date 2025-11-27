@@ -116,18 +116,40 @@ After deployment completes:
 
 ### ❌ "Invalid header value" Error
 
-**Problem**: API token format is wrong
+**Problem**: API token contains invisible whitespace/newlines
 
-**Fix**:
+**Quick Fix - Use Token Cleaner**:
+
+```powershell
+# Windows - Run this script
+.\scripts\clean-token.ps1
+
+# It will:
+# 1. Clean your token automatically
+# 2. Copy cleaned token to clipboard
+# 3. Show you exactly what to do next
+```
+
+```bash
+# Linux/Mac
+./scripts/clean-token.sh
+```
+
+**Manual Fix**:
 1. Go to Cloudflare and create NEW token
 2. When copying:
-   - Select ALL text (triple-click)
-   - Use Ctrl+C to copy
+   - Triple-click on token (select all)
+   - Ctrl+C to copy
+   - Paste into Notepad/TextEdit first
+   - Check it's ONE line (no breaks)
+   - Copy from Notepad
 3. In GitHub Secrets:
    - Delete old CLOUDFLARE_API_TOKEN
    - Create new one
-   - Use Ctrl+V to paste (don't type!)
+   - Ctrl+V to paste (don't type!)
 4. Try deployment again
+
+See [scripts/README.md](scripts/README.md) for detailed script usage.
 
 ---
 
