@@ -32,6 +32,8 @@ This repository contains a complete MOVA 3.6.x atom for **Smartlink edge routing
 
 ## Quick Start
 
+### Local Development
+
 ```bash
 # Install dependencies
 npm install
@@ -44,6 +46,20 @@ cd packages/spa-admin && npm run dev         # Terminal 2
 ```
 
 📖 **Full setup guide**: [SETUP.md](./SETUP.md)
+
+### Deploy to Production
+
+Deploy your Smartlink to Cloudflare in under 10 minutes:
+
+```bash
+# 1. Get Cloudflare credentials
+# 2. Add 3 secrets to GitHub (Settings → Secrets → Actions)
+# 3. Run workflow: Actions → Deploy Pages → Run workflow
+# 4. Done! Live at https://your-project.pages.dev
+```
+
+📖 **Quick deployment guide**: [QUICK_START_DEPLOYMENT.md](./QUICK_START_DEPLOYMENT.md)  
+📖 **Detailed Pages setup**: [docs/CLOUDFLARE_PAGES_SETUP.md](./docs/CLOUDFLARE_PAGES_SETUP.md)
 
 ## Architecture
 
