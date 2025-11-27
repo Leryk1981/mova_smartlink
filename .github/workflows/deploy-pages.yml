@@ -56,8 +56,10 @@ jobs:
 
       - name: Verify Cloudflare secrets
         run: |
-          echo "Checking if Cloudflare secrets are configured..."
+          echo "📋 Checking if Cloudflare secrets are configured..."
+          echo ""
           
+          # Check if secrets exist
           if [ -z "${{ secrets.CLOUDFLARE_API_TOKEN }}" ]; then
             echo "❌ ERROR: CLOUDFLARE_API_TOKEN is not set"
             echo ""
@@ -80,30 +82,93 @@ jobs:
             exit 1
           fi
           
+          # Verify token length (basic sanity check)
+          TOKEN_LENGTH=$(echo -n "${{ secrets.CLOUDFLARE_API_TOKEN }}" | wc -c)
+          if [ "$TOKEN_LENGTH" -lt 20 ]; then
+            echo "⚠️  WARNING: API token seems too short ($TOKEN_LENGTH chars)"
+            echo "   Cloudflare tokens are usually 40+ characters"
+            echo "   Please verify the token in GitHub Secrets"
+          fi
+          
+          # Verify account ID format (should be 32 hex chars)
+          ACCOUNT_LENGTH=$(echo -n "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" | wc -c)
+          if [ "$ACCOUNT_LENGTH" -ne 32 ]; then
+            echo "⚠️  WARNING: Account ID should be 32 characters (got $ACCOUNT_LENGTH)"
+            echo "   Format: 1234567890abcdef1234567890abcdef"
+          fi
+          
+          # Verify project name format
+          if echo "${{ secrets.CLOUDFLARE_PAGES_PROJECT }}" | grep -q '[^a-z0-9-]'; then
+            echo "⚠️  WARNING: Project name contains invalid characters"
+            echo "   Should be: lowercase letters, numbers, hyphens only"
+            echo "   Current: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}"
+          fi
+          
+          echo ""
           echo "✅ All required secrets are configured"
-          echo "   - CLOUDFLARE_API_TOKEN: ✓"
-          echo "   - CLOUDFLARE_ACCOUNT_ID: ✓"
+          echo "   - CLOUDFLARE_API_TOKEN: ✓ ($TOKEN_LENGTH chars)"
+          echo "   - CLOUDFLARE_ACCOUNT_ID: ✓ ($ACCOUNT_LENGTH chars)"
           echo "   - CLOUDFLARE_PAGES_PROJECT: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}"
+          echo ""
+
+      - name: Install Wrangler
+        run: npm install -g wrangler@latest
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy packages/spa-admin/dist --project-name="${{ secrets.CLOUDFLARE_PAGES_PROJECT }}" --branch=main --commit-dirty=true
         env:
-          # Ensure wrangler uses provided credentials
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          echo "🚀 Deploying to Cloudflare Pages..."
+          echo "   Project: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}"
+          echo "   Branch: main"
+          echo ""
+          
+          wrangler pages deploy packages/spa-admin/dist \
+            --project-name="${{ secrets.CLOUDFLARE_PAGES_PROJECT }}" \
+            --branch=main \
+            --commit-dirty=true
+          
+          echo ""
+          echo "✅ Deployment complete!"
 
       - name: Deployment summary
+        if: success()
         run: |
-          echo "✅ SPA deployed to Cloudflare Pages"
+          echo "✅ SPA deployed successfully to Cloudflare Pages"
+          echo ""
           echo "📦 Commit: ${{ github.sha }}"
           echo "🌐 URL: https://${{ secrets.CLOUDFLARE_PAGES_PROJECT }}.pages.dev"
           echo ""
-          echo "💡 Tips:"
-          echo "  - Configure custom domain in Cloudflare Pages dashboard"
-          echo "  - Update API base URL in production build if needed"
-          echo "  - Set up preview deployments for PRs"
+          echo "💡 Next steps:"
+          echo "  - Visit your site to verify deployment"
+          echo "  - Configure custom domain in Cloudflare Pages dashboard (optional)"
+          echo "  - Update API base URL if needed for production"
+
+      - name: Troubleshooting info
+        if: failure()
+        run: |
+          echo "❌ Deployment failed!"
+          echo ""
+          echo "🔍 Common issues:"
+          echo ""
+          echo "1. API Token Issues:"
+          echo "   - Verify token has 'Cloudflare Pages Edit' permission"
+          echo "   - Check token is not expired in Cloudflare Dashboard"
+          echo "   - Ensure no spaces/newlines in GitHub Secret"
+          echo ""
+          echo "2. Account ID Issues:"
+          echo "   - Verify Account ID matches your Cloudflare account"
+          echo "   - Check you have access to Cloudflare Pages"
+          echo ""
+          echo "3. Project Name Issues:"
+          echo "   - Must be lowercase, alphanumeric, hyphens only"
+          echo "   - No spaces or special characters"
+          echo ""
+          echo "📚 Detailed troubleshooting:"
+          echo "   - See: docs/CLOUDFLARE_PAGES_SETUP.md"
+          echo "   - Check Wrangler logs above for specific error"
+          echo ""
+          echo "💡 Alternative: Try the Manual Wrangler workflow"
+          echo "   Actions → Deploy Pages (Manual Wrangler) → Run workflow"
 
