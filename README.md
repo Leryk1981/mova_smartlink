@@ -13,6 +13,7 @@ This repository contains a complete MOVA 3.6.x atom for **Smartlink edge routing
 
 ## Features
 
+### Core Routing
 ✅ **Declarative routing** - Define rules in JSON, no code changes needed  
 ✅ **Edge-first** - Run on Cloudflare Workers for global low-latency  
 ✅ **Context-aware** - Route by country, language, device, UTM params  
@@ -20,6 +21,14 @@ This repository contains a complete MOVA 3.6.x atom for **Smartlink edge routing
 ✅ **Debug mode** - Test rules without redirects (`?debug=1`)  
 ✅ **Visual editor** - Manage rules via modern admin UI  
 ✅ **Type-safe** - Full TypeScript support across all packages
+
+### v2 Advanced Features 🆕
+✅ **Rule enablement** - Pause/resume rules with `enabled: false`  
+✅ **Time-based activation** - Schedule campaigns with `start_at` / `end_at`  
+✅ **A/B testing** - Weighted traffic distribution with `weight`  
+✅ **Enhanced priority** - Fine-grained control over rule evaluation order  
+
+📖 **Learn more**: [Smartlink v2 Features](./docs/SMARTLINK_V2_FEATURES.md)
 
 ## Quick Start
 

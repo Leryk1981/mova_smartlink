@@ -59,7 +59,28 @@
           },
           "priority": {
             "type": "integer",
+            "minimum": 0,
             "description": "Опційний явний пріоритет. Чим менше число, тим раніше перевірка."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Чи активне правило. За замовчуванням true.",
+            "default": true
+          },
+          "start_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-час, з якого правило починає діяти (включно)."
+          },
+          "end_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-час, після якого правило більше не діє."
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Вага для розподілу трафіку між кількома правилами, що підходять (A/B)."
           },
           "when": {
             "type": "object",

@@ -87,15 +87,97 @@ function ruleMatches(rule: SmartlinkRule, context: SmartlinkContext): boolean {
 }
 
 /**
+ * Check if rule is active at given time
+ */
+function isRuleActive(rule: SmartlinkRule, now: Date): boolean {
+  // Check if rule is explicitly disabled
+  if (rule.enabled === false) {
+    return false;
+  }
+  
+  // Check start_at
+  if (rule.start_at) {
+    const startTime = new Date(rule.start_at);
+    if (now < startTime) {
+      return false;
+    }
+  }
+  
+  // Check end_at
+  if (rule.end_at) {
+    const endTime = new Date(rule.end_at);
+    if (now > endTime) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
+/**
+ * Weighted random selection from matching rules
+ */
+function selectByWeight(matchedRules: Array<{ rule: SmartlinkRule; index: number }>): { rule: SmartlinkRule; index: number } {
+  // Check if any rule has weight defined
+  const hasWeights = matchedRules.some(r => r.rule.weight !== undefined);
+  
+  if (!hasWeights) {
+    // No weights defined - return first rule (already sorted by priority)
+    return matchedRules[0];
+  }
+  
+  // Normalize weights (treat undefined as 1, filter out 0)
+  const weighted = matchedRules
+    .map(r => ({
+      ...r,
+      normalizedWeight: r.rule.weight !== undefined ? r.rule.weight : 1,
+    }))
+    .filter(r => r.normalizedWeight > 0);
+  
+  if (weighted.length === 0) {
+    // All weights are 0 - fallback to first rule
+    return matchedRules[0];
+  }
+  
+  if (weighted.length === 1) {
+    return weighted[0];
+  }
+  
+  // Calculate total weight
+  const totalWeight = weighted.reduce((sum, r) => sum + r.normalizedWeight, 0);
+  
+  // Random selection
+  const random = Math.random() * totalWeight;
+  let cumulative = 0;
+  
+  for (const item of weighted) {
+    cumulative += item.normalizedWeight;
+    if (random < cumulative) {
+      return item;
+    }
+  }
+  
+  // Fallback (shouldn't reach here, but safety)
+  return weighted[weighted.length - 1];
+}
+
+/**
  * Evaluate smartlink rules and return routing decision
  * 
- * Rules are checked in order:
- * 1. If rule has explicit priority - sort by priority (lower = higher priority)
- * 2. Otherwise use array index order
- * 3. First matching rule wins
- * 4. If no rule matches, use fallback_target
+ * v2 features:
+ * - enabled: Skip disabled rules
+ * - start_at/end_at: Time-based rule activation
+ * - priority: Lower number = higher priority
+ * - weight: A/B testing with weighted random selection
  * 
- * @param context - Normalized request context (country, lang, device, utm)
+ * Evaluation logic:
+ * 1. Filter rules by enabled, start_at, end_at
+ * 2. Sort by priority (lower = higher)
+ * 3. Find all matching rules (by when conditions)
+ * 4. If multiple matches - select by weight (A/B)
+ * 5. If no matches - use fallback_target
+ * 
+ * @param context - Normalized request context (country, lang, device, utm, now)
  * @param core - SmartlinkCore configuration with rules
  * @returns Decision with target, branch, and rule index
  */
@@ -103,37 +185,48 @@ export function evaluate(
   context: SmartlinkContext,
   core: SmartlinkCore
 ): SmartlinkDecision {
-  // Sort rules by priority (if defined), then by original index
-  const sortedRules = core.rules
+  // Determine current time
+  const now = context.now ? new Date(context.now) : new Date();
+  
+  // Default priority for rules without explicit priority
+  const DEFAULT_PRIORITY = 1000;
+  
+  // Step 1: Filter active rules (enabled, time-based)
+  // Step 2: Sort by priority
+  const activeRules = core.rules
     .map((rule, index) => ({ rule, index }))
+    .filter(({ rule }) => isRuleActive(rule, now))
     .sort((a, b) => {
-      // If both have priority, compare priorities
-      if (a.rule.priority !== undefined && b.rule.priority !== undefined) {
-        return a.rule.priority - b.rule.priority;
+      const priorityA = a.rule.priority !== undefined ? a.rule.priority : DEFAULT_PRIORITY;
+      const priorityB = b.rule.priority !== undefined ? b.rule.priority : DEFAULT_PRIORITY;
+      
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
       }
-      // If only one has priority, it goes first
-      if (a.rule.priority !== undefined) return -1;
-      if (b.rule.priority !== undefined) return 1;
-      // Otherwise maintain original order
+      
+      // Same priority - maintain original order
       return a.index - b.index;
     });
   
-  // Find first matching rule
-  for (const { rule, index } of sortedRules) {
-    if (ruleMatches(rule, context)) {
-      return {
-        target: rule.target,
-        branch: rule.label || rule.id || `rule_${index}`,
-        rule_index: index,
-      };
-    }
+  // Step 3: Find all matching rules
+  const matchedRules = activeRules.filter(({ rule }) => ruleMatches(rule, context));
+  
+  // Step 4: No matches - use fallback
+  if (matchedRules.length === 0) {
+    return {
+      target: core.fallback_target,
+      branch: 'fallback',
+      rule_index: -1,
+    };
   }
   
-  // No rule matched - use fallback
+  // Step 5: Select rule (weighted random if multiple matches)
+  const selected = selectByWeight(matchedRules);
+  
   return {
-    target: core.fallback_target,
-    branch: 'fallback',
-    rule_index: -1,
+    target: selected.rule.target,
+    branch: selected.rule.label || selected.rule.id || `rule_${selected.index}`,
+    rule_index: selected.index,
   };
 }
 

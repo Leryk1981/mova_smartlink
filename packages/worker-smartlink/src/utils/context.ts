@@ -75,6 +75,7 @@ export function normalizeContext(request: Request): SmartlinkContext {
     lang: parseLanguage(headers.get('accept-language')),
     device: parseDevice(headers.get('user-agent')),
     utm: parseUTM(url.searchParams),
+    now: new Date().toISOString(),  // v2: Add current timestamp for time-based rules
   };
   
   // Remove empty utm object if no UTM params

@@ -36,6 +36,7 @@ export interface DebugResponse {
     lang?: string;
     device?: string;
     utm?: Record<string, string>;
+    now?: string;  // v2: Timestamp for time-based rules
   };
   decision: {
     target: string;

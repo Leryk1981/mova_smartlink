@@ -1,0 +1,98 @@
+{
+  "link_id": "black_friday_2025",
+  "purpose": "Black Friday 2025: A/B testing with time-limited campaign and priority rules",
+  "status": "active",
+  "context_shape": [
+    "country",
+    "device",
+    "utm.source"
+  ],
+  "rules": [
+    {
+      "id": "rule_vip_early",
+      "label": "vip_early_access",
+      "priority": 10,
+      "enabled": true,
+      "start_at": "2025-11-27T00:00:00Z",
+      "end_at": "2025-11-28T23:59:59Z",
+      "when": {
+        "utm": {
+          "source": "vip_email"
+        }
+      },
+      "target": "https://example.com/black-friday/vip-early",
+      "weight": 10
+    },
+    {
+      "id": "rule_us_mobile_variant_a",
+      "label": "us_mobile_variant_a",
+      "priority": 50,
+      "enabled": true,
+      "start_at": "2025-11-29T00:00:00Z",
+      "end_at": "2025-11-30T23:59:59Z",
+      "when": {
+        "country": "US",
+        "device": "mobile"
+      },
+      "target": "https://example.com/black-friday/us-mobile-a",
+      "weight": 3
+    },
+    {
+      "id": "rule_us_mobile_variant_b",
+      "label": "us_mobile_variant_b",
+      "priority": 50,
+      "enabled": true,
+      "start_at": "2025-11-29T00:00:00Z",
+      "end_at": "2025-11-30T23:59:59Z",
+      "when": {
+        "country": "US",
+        "device": "mobile"
+      },
+      "target": "https://example.com/black-friday/us-mobile-b",
+      "weight": 7
+    },
+    {
+      "id": "rule_uk_general",
+      "label": "uk_general_campaign",
+      "priority": 100,
+      "enabled": true,
+      "start_at": "2025-11-29T00:00:00Z",
+      "end_at": "2025-11-30T23:59:59Z",
+      "when": {
+        "country": "UK"
+      },
+      "target": "https://example.co.uk/black-friday/main"
+    },
+    {
+      "id": "rule_paused_test",
+      "label": "paused_variant",
+      "priority": 60,
+      "enabled": false,
+      "when": {
+        "country": "US",
+        "device": "mobile"
+      },
+      "target": "https://example.com/black-friday/paused-test",
+      "weight": 0
+    },
+    {
+      "id": "rule_general_bf",
+      "label": "general_black_friday",
+      "priority": 200,
+      "enabled": true,
+      "start_at": "2025-11-29T00:00:00Z",
+      "end_at": "2025-11-30T23:59:59Z",
+      "when": {},
+      "target": "https://example.com/black-friday/general"
+    }
+  ],
+  "fallback_target": "https://example.com/shop",
+  "meta": {
+    "version": 2,
+    "created_at": "2025-11-26T12:00:00Z",
+    "updated_at": "2025-11-27T09:30:00Z",
+    "created_by": "marketing_team",
+    "updated_by": "marketing_team"
+  }
+}
+

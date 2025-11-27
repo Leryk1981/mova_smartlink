@@ -53,6 +53,7 @@ export async function handlePublicRedirect(
           lang: context.lang,
           device: context.device,
           utm: context.utm as Record<string, string> | undefined,
+          now: context.now,  // v2: Include timestamp in debug output
         },
         decision: {
           target: decision.target,

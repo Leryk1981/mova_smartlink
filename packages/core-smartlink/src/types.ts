@@ -62,6 +62,12 @@ export interface SmartlinkRule {
   priority?: number;
   when: RuleConditions;
   target: string;
+  
+  // v2 fields
+  enabled?: boolean;      // default: true
+  start_at?: string;      // ISO 8601 date-time
+  end_at?: string;        // ISO 8601 date-time
+  weight?: number;        // for A/B testing (non-negative)
 }
 
 /**
@@ -98,6 +104,7 @@ export interface SmartlinkContext {
   lang?: string;
   device?: string;
   utm?: UTMParams;
+  now?: string;  // ISO 8601 timestamp for time-based rules
 }
 
 /**
