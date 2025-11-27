@@ -122,12 +122,15 @@ jobs:
           echo "🚀 Deploying to Cloudflare Pages..."
           echo "   Project: ${{ secrets.CLOUDFLARE_PAGES_PROJECT }}"
           echo "   Branch: main"
+          echo "   Commit: ${{ github.sha }}"
           echo ""
           
+          # Deploy with explicit commit hash to enable auto-project creation
           wrangler pages deploy packages/spa-admin/dist \
             --project-name="${{ secrets.CLOUDFLARE_PAGES_PROJECT }}" \
             --branch=main \
-            --commit-dirty=true
+            --commit-hash="${{ github.sha }}" \
+            --commit-message="Deploy from GitHub Actions"
           
           echo ""
           echo "✅ Deployment complete!"
