@@ -7,10 +7,7 @@ import {
   buildStatsReport,
   validateStatsQuery,
   validateStatsReport,
-  type SmartlinkStatsQuery,
-  type SmartlinkStatsReport,
   type SmartlinkStatsGetEnvelope,
-  type SmartlinkResolutionEpisode,
 } from '@mova/core-smartlink';
 import type { Env } from '../types.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
