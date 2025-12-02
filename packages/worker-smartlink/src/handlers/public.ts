@@ -3,7 +3,7 @@
  * Performs smartlink evaluation and redirect
  */
 
-import { evaluate } from '@mova/core-smartlink';
+import { evaluate } from '@mova/core-smartlink/runtime';
 import type { Env, DebugResponse } from '../types.js';
 import { normalizeContext } from '../utils/context.js';
 import { getSmartlinkCore } from '../utils/kv.js';

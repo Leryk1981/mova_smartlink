@@ -2,7 +2,7 @@
  * KV storage helpers for SmartlinkCore
  */
 
-import type { SmartlinkCore } from '@mova/core-smartlink';
+import type { SmartlinkCore } from '@mova/core-smartlink/runtime';
 import type { KVSmartlinkValue } from '../types.js';
 
 /**

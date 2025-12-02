@@ -7,7 +7,7 @@ import worker from './index.js';
 import type {
   SmartlinkResolveEnvelope,
   SmartlinkStatsGetEnvelope,
-} from '@mova/core-smartlink';
+} from '@mova/core-smartlink/runtime';
 
 // Mock KV namespace (minimal implementation to satisfy tests and Workers types)
 class MockKVNamespace {
