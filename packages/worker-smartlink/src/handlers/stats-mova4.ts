@@ -3,18 +3,24 @@
  * Implements env.smartlink_stats_get_v1 envelope
  */
 
-import {
-  buildStatsReport,
-  validateStatsQuery,
-  validateStatsReport,
-  type SmartlinkStatsQuery,
-  type SmartlinkStatsReport,
-  type SmartlinkStatsGetEnvelope,
-  type SmartlinkResolutionEpisode,
-} from '@mova/core-smartlink';
+import { buildStatsReport, type SmartlinkStatsGetEnvelope } from '@mova/core-smartlink/runtime';
 import type { Env } from '../types.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 import { listEpisodes } from '../utils/kv-mova4.js';
+
+function isValidStatsQuery(query: SmartlinkStatsGetEnvelope['payload']['input']): boolean {
+  if (!query) return false;
+
+  const hasSmartlinkId =
+    query.smartlink_id === undefined ||
+    (typeof query.smartlink_id === 'string' && query.smartlink_id.trim() !== '');
+
+  const groupByOk =
+    query.group_by === undefined ||
+    (Array.isArray(query.group_by) && query.group_by.length > 0);
+
+  return hasSmartlinkId && groupByOk;
+}
 
 /**
  * Handle MOVA 4.0 stats query
@@ -44,16 +50,16 @@ export async function handleStats(request: Request, env: Env): Promise<Response>
       return errorResponse('Invalid verb, expected "get"', 400);
     }
 
-    // Validate input (stats query)
-    const queryValidation = validateStatsQuery(envelope.payload.input);
-    if (!queryValidation.ok) {
-      return errorResponse(
-        `Invalid stats query: ${JSON.stringify(queryValidation.error)}`,
-        400
-      );
+    if (!envelope.payload || !envelope.payload.input) {
+      return errorResponse('Invalid payload: input is required', 400);
     }
 
-    const query = queryValidation.value;
+    // Basic query checks (avoid Ajv in Worker bundle)
+    if (!isValidStatsQuery(envelope.payload.input)) {
+      return errorResponse('Invalid stats query: smartlink_id or group_by is malformed', 400);
+    }
+
+    const query = envelope.payload.input;
 
     // Load episodes from KV
     // Note: In production, consider using D1 for better query performance
@@ -65,13 +71,6 @@ export async function handleStats(request: Request, env: Env): Promise<Response>
 
     // Build stats report using core function
     const report = buildStatsReport(episodes, query);
-
-    // Validate report (optional, for debugging)
-    const reportValidation = validateStatsReport(report);
-    if (!reportValidation.ok) {
-      console.error('Invalid stats report:', reportValidation.error);
-      // Continue anyway - internal validation issue
-    }
 
     // Build response envelope
     const responseEnvelope: SmartlinkStatsGetEnvelope = {

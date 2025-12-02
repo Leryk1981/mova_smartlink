@@ -158,9 +158,15 @@ Created `README.md` with:
 
 #### Summary SL-EXEC-2
 
-**Files created:** 6  
-**Lines of code:** ~1,035  
+**Files created:** 6
+**Lines of code:** ~1,035
 **Status:** ✅ **COMPLETE** — All endpoints implemented and tested
+
+### Validation strategy for Cloudflare Workers
+
+- **Ajv stays in Node/CLI**: validation helpers remain available for migration tools, CI, and local scripts.
+- **Worker runtime is Ajv-free**: MOVA 4.0 handlers import from `@mova/core-smartlink/runtime`, avoiding Ajv and dynamic code generation in the Cloudflare bundle.
+- **Lightweight checks in handlers**: Workers perform only minimal presence checks (e.g., `smartlink_id`, `default_target_id`, non-empty targets/group_by) before invoking core logic. They assume configs are already validated upstream.
 
 ---
 

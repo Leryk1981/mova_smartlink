@@ -2,7 +2,7 @@
  * Worker-specific types and bindings
  */
 
-import type { SmartlinkCore } from '@mova/core-smartlink';
+import type { SmartlinkCore } from '@mova/core-smartlink/runtime';
 
 /**
  * Cloudflare Worker environment bindings

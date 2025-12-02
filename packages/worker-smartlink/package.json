@@ -9,6 +9,7 @@
     "deploy": "wrangler deploy",
     "tail": "wrangler tail",
     "test": "vitest run",
+    "prelint": "npm run build --workspace=@mova/core-smartlink",
     "lint": "tsc --noEmit"
   },
   "keywords": [

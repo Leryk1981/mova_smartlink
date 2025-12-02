@@ -3,7 +3,7 @@
  * CRUD operations on SmartlinkCore
  */
 
-import type { SmartlinkCore } from '@mova/core-smartlink';
+import type { SmartlinkCore } from '@mova/core-smartlink/runtime';
 import type { Env } from '../types.js';
 import { getSmartlinkCore, saveSmartlinkCore, deleteSmartlinkCore } from '../utils/kv.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
