@@ -7,7 +7,7 @@ import worker from './index.js';
 import type {
   SmartlinkResolveEnvelope,
   SmartlinkStatsGetEnvelope,
-} from '@mova/core-smartlink';
+} from '@mova/core-smartlink/runtime';
 
 // Mock KV namespace (minimal implementation to satisfy tests and Workers types)
 class MockKVNamespace {
@@ -15,7 +15,7 @@ class MockKVNamespace {
 
   async get(
     key: string,
-    options?: Partial<KVNamespaceGetOptions> | 'text' | 'json' | 'arrayBuffer' | 'stream'
+    options?: Partial<KVNamespaceGetOptions<any>> | 'text' | 'json' | 'arrayBuffer' | 'stream'
   ): Promise<any> {
     const value = this.store.get(key);
     if (!value) return null;
@@ -56,15 +56,15 @@ class MockKVNamespace {
       .slice(0, limit)
       .map((name) => ({ name }));
 
-    return { keys, list_complete: true, cursor: '' };
+    return { keys, list_complete: true, cacheStatus: null };
   }
 
   async getWithMetadata<Metadata = unknown>(
     key: string,
-    options?: Partial<KVNamespaceGetOptions> | 'text' | 'json' | 'arrayBuffer' | 'stream'
+    options?: Partial<KVNamespaceGetOptions<any>> | 'text' | 'json' | 'arrayBuffer' | 'stream'
   ): Promise<KVNamespaceGetWithMetadataResult<any, Metadata>> {
     const value = await this.get(key, options);
-    return { value, metadata: null };
+    return { value, metadata: null, cacheStatus: null };
   }
 }
 
