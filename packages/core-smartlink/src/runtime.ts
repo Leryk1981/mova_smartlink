@@ -21,6 +21,15 @@ export type {
 } from './types.js';
 
 // MOVA 4.0.0 (runtime-safe)
-export * from './types-mova4.js';
+export type {
+  SmartlinkClickContext,
+  SmartlinkConfig,
+  SmartlinkResolutionEpisode,
+  SmartlinkResolutionResult,
+  SmartlinkResolveEnvelope,
+  SmartlinkStatsGetEnvelope,
+  SmartlinkStatsQuery,
+  SmartlinkStatsReport,
+} from './types-mova4.js';
 export { resolveSmartlink } from './resolve.js';
 export { buildStatsReport } from './stats.js';

@@ -3,13 +3,8 @@
  * Implements env.smartlink_stats_get_v1 envelope
  */
 
-import { buildStatsReport, type SmartlinkStatsGetEnvelope } from '@mova/core-smartlink/runtime';
-import {
-  buildStatsReport,
-  validateStatsQuery,
-  validateStatsReport,
-  type SmartlinkStatsGetEnvelope,
-} from '@mova/core-smartlink';
+import type { SmartlinkStatsGetEnvelope } from '@mova/core-smartlink/runtime';
+import { buildStatsReport } from '@mova/core-smartlink/runtime';
 import type { Env } from '../types.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 import { listEpisodes } from '../utils/kv-mova4.js';
