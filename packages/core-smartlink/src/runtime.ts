@@ -31,5 +31,6 @@ export type {
   SmartlinkStatsQuery,
   SmartlinkStatsReport,
 } from './types-mova4.js';
+export * from './types-mova4.js';
 export { resolveSmartlink } from './resolve.js';
 export { buildStatsReport } from './stats.js';
