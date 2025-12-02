@@ -4,27 +4,38 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import worker from './index.js';
-import type { SmartlinkResolveEnvelope, SmartlinkStatsGetEnvelope } from '@mova/core-smartlink';
+import type {
+  SmartlinkResolveEnvelope,
+  SmartlinkStatsGetEnvelope,
+} from '@mova/core-smartlink';
 
-// Mock KV namespace
-class MockKVNamespace implements KVNamespace {
+// Mock KV namespace (minimal implementation to satisfy tests and Workers types)
+class MockKVNamespace {
   private store = new Map<string, string>();
 
-  async get(key: string, type?: 'text'): Promise<string | null>;
-  async get(key: string, type: 'json'): Promise<any>;
-  async get(key: string, type: 'arrayBuffer'): Promise<ArrayBuffer | null>;
-  async get(key: string, type: 'stream'): Promise<ReadableStream | null>;
-  async get(key: string, type?: any): Promise<any> {
+  async get(
+    key: string,
+    options?: Partial<KVNamespaceGetOptions> | 'text' | 'json' | 'arrayBuffer' | 'stream'
+  ): Promise<any> {
     const value = this.store.get(key);
     if (!value) return null;
-    
+
+    const type = typeof options === 'object' ? (options as any).type : options;
+
     if (type === 'json') {
       return JSON.parse(value);
+    }
+    if (type === 'arrayBuffer') {
+      return new TextEncoder().encode(value).buffer;
     }
     return value;
   }
 
-  async put(key: string, value: string | ArrayBuffer | ReadableStream, options?: any): Promise<void> {
+  async put(
+    key: string,
+    value: string | ArrayBuffer | ReadableStream,
+    _options?: Partial<KVNamespacePutOptions>
+  ): Promise<void> {
     if (typeof value === 'string') {
       this.store.set(key, value);
     } else if (value instanceof ArrayBuffer) {
@@ -36,23 +47,25 @@ class MockKVNamespace implements KVNamespace {
     this.store.delete(key);
   }
 
-  async list(options?: any): Promise<any> {
+  async list(options?: KVNamespaceListOptions): Promise<KVNamespaceListResult<unknown>> {
     const prefix = options?.prefix || '';
     const limit = options?.limit || 1000;
-    
+
     const keys = Array.from(this.store.keys())
-      .filter(k => k.startsWith(prefix))
+      .filter((k) => k.startsWith(prefix))
       .slice(0, limit)
-      .map(name => ({ name }));
-    
-    return { keys, list_complete: true };
+      .map((name) => ({ name }));
+
+    return { keys, list_complete: true, cursor: '' };
   }
 
-  getWithMetadata(key: string): Promise<any> { throw new Error('Not implemented'); }
-  async getWithMetadata(key: string, type: 'text'): Promise<any> { throw new Error('Not implemented'); }
-  async getWithMetadata(key: string, type: 'json'): Promise<any> { throw new Error('Not implemented'); }
-  async getWithMetadata(key: string, type: 'arrayBuffer'): Promise<any> { throw new Error('Not implemented'); }
-  async getWithMetadata(key: string, type: 'stream'): Promise<any> { throw new Error('Not implemented'); }
+  async getWithMetadata<Metadata = unknown>(
+    key: string,
+    options?: Partial<KVNamespaceGetOptions> | 'text' | 'json' | 'arrayBuffer' | 'stream'
+  ): Promise<KVNamespaceGetWithMetadataResult<any, Metadata>> {
+    const value = await this.get(key, options);
+    return { value, metadata: null };
+  }
 }
 
 // Mock environment
