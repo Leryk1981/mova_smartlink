@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.dev/schemas/ds.smartlink_stats_report_v1.schema.json",
+  "title": "SmartLink Statistics Report v1",
+  "description": "Statistics report for SmartLink click data. Part of SmartLink MOVA 4.0.0 implementation.",
+  "type": "object",
+  "properties": {
+    "query": {
+      "$ref": "ds.smartlink_stats_query_v1.schema.json",
+      "description": "The original query that produced this report."
+    },
+    "summary": {
+      "type": "object",
+      "description": "Aggregated summary statistics.",
+      "properties": {
+        "total_clicks": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of clicks in the time range."
+        },
+        "successful_redirects": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of successful redirects (outcome: OK or DEFAULT_USED)."
+        },
+        "errors": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of errors."
+        },
+        "unique_countries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of unique countries."
+        },
+        "unique_targets": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of unique targets used."
+        },
+        "avg_latency_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average resolution latency in milliseconds."
+        }
+      },
+      "additionalProperties": true
+    },
+    "rows": {
+      "type": "array",
+      "description": "Detailed statistics rows (grouped according to query.group_by).",
+      "items": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "object",
+            "description": "The grouping dimensions for this row.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "metrics": {
+            "type": "object",
+            "description": "The metrics for this row.",
+            "properties": {
+              "clicks": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "successful_redirects": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "errors": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "avg_latency_ms": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "dimensions",
+          "metrics"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "meta": {
+      "type": "object",
+      "description": "Metadata about the report generation.",
+      "properties": {
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this report was generated."
+        },
+        "query_latency_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Time taken to execute the query."
+        },
+        "total_rows": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of rows matching the query (may be greater than returned rows if pagination is used)."
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "summary",
+    "rows"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.dev/schemas/ds.smartlink_click_context_v1.schema.json",
+  "title": "SmartLink Click Context v1",
+  "description": "Normalized context data for a single click through a SmartLink. Part of SmartLink MOVA 4.0.0 implementation.",
+  "type": "object",
+  "properties": {
+    "smartlink_id": {
+      "type": "string",
+      "description": "The smartlink identifier being accessed."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the click event."
+    },
+    "ip": {
+      "type": "string",
+      "description": "IP address of the client (IPv4 or IPv6)."
+    },
+    "country": {
+      "type": "string",
+      "description": "ISO 3166-1 alpha-2 country code derived from IP or edge location."
+    },
+    "language": {
+      "type": "string",
+      "description": "Preferred language code (ISO 639-1) derived from Accept-Language header."
+    },
+    "device": {
+      "type": "string",
+      "enum": [
+        "mobile",
+        "tablet",
+        "desktop",
+        "bot",
+        "unknown"
+      ],
+      "description": "Device type detected from User-Agent."
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "Raw User-Agent header string."
+    },
+    "referrer": {
+      "type": "string",
+      "description": "Referrer URL if present."
+    },
+    "utm": {
+      "type": "object",
+      "description": "UTM parameters extracted from query string.",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "utm_source parameter"
+        },
+        "medium": {
+          "type": "string",
+          "description": "utm_medium parameter"
+        },
+        "campaign": {
+          "type": "string",
+          "description": "utm_campaign parameter"
+        },
+        "term": {
+          "type": "string",
+          "description": "utm_term parameter"
+        },
+        "content": {
+          "type": "string",
+          "description": "utm_content parameter"
+        }
+      },
+      "additionalProperties": false
+    },
+    "query_params": {
+      "type": "object",
+      "description": "Additional query parameters (excluding UTM params).",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "edge_location": {
+      "type": "string",
+      "description": "Edge datacenter identifier (e.g., Cloudflare colo code)."
+    }
+  },
+  "required": [
+    "smartlink_id",
+    "timestamp"
+  ],
+  "additionalProperties": false
+}

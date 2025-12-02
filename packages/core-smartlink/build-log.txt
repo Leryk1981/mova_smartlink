@@ -1,0 +1,13 @@
+src/index.ts(13,1): error TS2308: Module './types.js' has already exported a member named 'SmartlinkMeta'. Consider explicitly re-exporting to resolve the ambiguity.
+src/index.ts(13,1): error TS2308: Module './types.js' has already exported a member named 'SmartlinkStatus'. Consider explicitly re-exporting to resolve the ambiguity.
+src/resolve.ts(14,3): error TS6196: 'SmartlinkTargetConditions' is declared but never used.
+src/resolve.ts(223,16): error TS2367: This comparison appears to be unintentional because the types 'SmartlinkStatus' and '"disabled"' have no overlap.
+src/validators.ts(7,44): error TS2307: Cannot find module 'ajv' or its corresponding type declarations.
+src/validators.ts(8,24): error TS2307: Cannot find module 'ajv-formats' or its corresponding type declarations.
+src/validators.ts(15,3): error TS6196: 'SmartlinkResolutionEpisode' is declared but never used.
+src/validators.ts(16,3): error TS6196: 'SmartlinkResolveEnvelope' is declared but never used.
+src/validators.ts(17,3): error TS6196: 'SmartlinkStatsGetEnvelope' is declared but never used.
+src/validators.ts(233,22): error TS7006: Parameter 'err' implicitly has an 'any' type.
+src/validators.ts(246,24): error TS2322: Type 'unknown' is not assignable to type 'SmartlinkConfig'.
+src/validators.ts(258,24): error TS2322: Type 'unknown' is not assignable to type 'SmartlinkClickContext'.
+src/validators.ts(270,24): error TS2322: Type 'unknown' is not assignable to type 'SmartlinkResolutionResult'.

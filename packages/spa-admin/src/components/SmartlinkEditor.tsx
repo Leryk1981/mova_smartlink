@@ -6,6 +6,7 @@ import '../styles/SmartlinkEditor.css';
 
 interface Props {
   linkId: string;
+  triggerSave?: number;
 }
 
 const CONTEXT_FIELDS: ContextField[] = [
@@ -19,7 +20,7 @@ const CONTEXT_FIELDS: ContextField[] = [
   'utm.content',
 ];
 
-export function SmartlinkEditor({ linkId }: Props) {
+export function SmartlinkEditor({ linkId, triggerSave }: Props) {
   const { core, loading, error, save, saving } = useSmartlink(linkId);
   const [editedCore, setEditedCore] = useState<SmartlinkCore | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -30,6 +31,13 @@ export function SmartlinkEditor({ linkId }: Props) {
       setEditedCore(core);
     }
   }, [core]);
+
+  // Trigger save from external source (Hero button)
+  useEffect(() => {
+    if (triggerSave && triggerSave > 0 && editedCore) {
+      handleSave();
+    }
+  }, [triggerSave]);
 
   if (loading) {
     return <div className="loading">Loading smartlink...</div>;

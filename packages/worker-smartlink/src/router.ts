@@ -39,6 +39,13 @@ export class Router {
   }
   
   /**
+   * Add POST route
+   */
+  post(pattern: string, handler: Route['handler']): void {
+    this.add('POST', pattern, handler);
+  }
+  
+  /**
    * Add PUT route
    */
   put(pattern: string, handler: Route['handler']): void {

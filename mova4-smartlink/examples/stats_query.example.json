@@ -1,0 +1,20 @@
+{
+  "smartlink_id": "spring_sale_2026",
+  "time_range": {
+    "from": "2026-03-01T00:00:00Z",
+    "to": "2026-03-31T23:59:59Z"
+  },
+  "group_by": [
+    "target_id",
+    "country",
+    "device"
+  ],
+  "filters": {
+    "outcome": [
+      "OK",
+      "DEFAULT_USED"
+    ]
+  },
+  "limit": 100,
+  "offset": 0
+}

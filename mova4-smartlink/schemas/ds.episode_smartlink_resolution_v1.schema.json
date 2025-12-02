@@ -1,0 +1,262 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.dev/schemas/ds.episode_smartlink_resolution_v1.schema.json",
+  "title": "SmartLink Resolution Episode v1",
+  "description": "Genetic layer: Episode record of a single SmartLink resolution execution. Captures input, output, metrics, and outcome for pattern memory and analysis. Part of SmartLink MOVA 4.0.0 implementation.",
+  "type": "object",
+  "properties": {
+    "episode_id": {
+      "type": "string",
+      "description": "Unique identifier for this episode."
+    },
+    "envelope_id": {
+      "type": "string",
+      "const": "env.smartlink_resolve_v1",
+      "description": "The envelope type that was executed."
+    },
+    "envelope_instance_id": {
+      "type": "string",
+      "description": "The specific instance identifier of the envelope (correlation_id or request_id)."
+    },
+    "timestamp_start": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the resolution started."
+    },
+    "timestamp_end": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the resolution completed."
+    },
+    "input": {
+      "oneOf": [
+        {
+          "$ref": "ds.smartlink_click_context_v1.schema.json",
+          "description": "Inline click context that was processed."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "Reference to stored input (URL, storage key, etc.)."
+            }
+          },
+          "required": [
+            "ref"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "The input click context (inline or by reference)."
+    },
+    "config": {
+      "oneOf": [
+        {
+          "$ref": "ds.smartlink_config_v1.schema.json",
+          "description": "Inline SmartLink configuration used."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "Reference to the configuration (e.g., KV key, hash)."
+            },
+            "version": {
+              "type": "integer",
+              "description": "Version number of the config at execution time."
+            }
+          },
+          "required": [
+            "ref"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "The SmartLink configuration used (inline or by reference)."
+    },
+    "output": {
+      "oneOf": [
+        {
+          "$ref": "ds.smartlink_resolution_result_v1.schema.json",
+          "description": "Inline resolution result."
+        },
+        {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "Reference to stored output."
+            }
+          },
+          "required": [
+            "ref"
+          ],
+          "additionalProperties": false
+        }
+      ],
+      "description": "The resolution result (inline or by reference)."
+    },
+    "executor": {
+      "type": "object",
+      "description": "Information about the executor that performed the resolution.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of executor (e.g., 'cloudflare-worker', 'lambda', 'agent')."
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the executor implementation."
+        },
+        "instance_id": {
+          "type": "string",
+          "description": "Instance identifier (worker ID, pod ID, etc.)."
+        },
+        "location": {
+          "type": "string",
+          "description": "Execution location (e.g., Cloudflare datacenter code, AWS region)."
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": true
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Performance and execution metrics.",
+      "properties": {
+        "latency_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total execution time in milliseconds."
+        },
+        "config_fetch_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Time to fetch configuration (if fetched remotely)."
+        },
+        "evaluation_ms": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Time spent in routing logic evaluation."
+        },
+        "retries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of retry attempts (if any)."
+        },
+        "cache_hit": {
+          "type": "boolean",
+          "description": "Whether configuration was served from cache."
+        }
+      },
+      "additionalProperties": true
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "success",
+        "partial_success",
+        "failure",
+        "error"
+      ],
+      "description": "Overall outcome classification for this episode."
+    },
+    "outcome_details": {
+      "type": "object",
+      "description": "Detailed outcome information.",
+      "properties": {
+        "resolution_outcome": {
+          "type": "string",
+          "description": "The resolution result outcome (from ds.smartlink_resolution_result_v1)."
+        },
+        "http_status": {
+          "type": "integer",
+          "description": "HTTP status code returned to client."
+        },
+        "error_code": {
+          "type": "string",
+          "description": "Error code if outcome is failure/error."
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Human-readable error message."
+        }
+      },
+      "additionalProperties": true
+    },
+    "quality_signals": {
+      "type": "object",
+      "description": "Quality indicators for this execution (for learning and optimization).",
+      "properties": {
+        "user_bounced": {
+          "type": "boolean",
+          "description": "Whether user bounced immediately after redirect (if tracked)."
+        },
+        "conversion": {
+          "type": "boolean",
+          "description": "Whether this click led to conversion (if tracked)."
+        },
+        "anomaly_detected": {
+          "type": "boolean",
+          "description": "Whether any anomalous behavior was detected."
+        },
+        "confidence_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Confidence in the routing decision (0-1)."
+        }
+      },
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional human or AI-generated notes about this episode."
+    },
+    "analysis": {
+      "type": "object",
+      "description": "Optional post-execution analysis (human or automated).",
+      "properties": {
+        "analyzed_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When analysis was performed."
+        },
+        "analyzed_by": {
+          "type": "string",
+          "description": "Who/what performed the analysis."
+        },
+        "insights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of insights derived from this episode."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for categorization and retrieval."
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "episode_id",
+    "envelope_id",
+    "timestamp_start",
+    "timestamp_end",
+    "input",
+    "output",
+    "executor",
+    "outcome"
+  ],
+  "additionalProperties": false
+}

@@ -1,11 +1,15 @@
 /**
  * Smartlink Worker - Main entry point
  * 
- * Routes:
+ * Legacy Routes (MOVA 3.6):
  * - GET /s/:linkId - Public smartlink redirect
  * - GET /api/smartlinks/:linkId - Get smartlink config
  * - PUT /api/smartlinks/:linkId - Update smartlink config
  * - DELETE /api/smartlinks/:linkId - Delete smartlink config
+ * 
+ * MOVA 4.0 Routes:
+ * - POST /smartlink/resolve - SmartLink resolution (env.smartlink_resolve_v1)
+ * - POST /smartlink/stats - Statistics query (env.smartlink_stats_get_v1)
  */
 
 import type { Env } from './types.js';
@@ -16,10 +20,32 @@ import {
   handlePutSmartlink, 
   handleDeleteSmartlink 
 } from './handlers/admin.js';
+import { handleResolve } from './handlers/resolve-mova4.js';
+import { handleStats } from './handlers/stats-mova4.js';
 import { errorResponse, corsResponse } from './utils/response.js';
 
 // Create router
 const router = new Router();
+
+// ============================================================================
+// MOVA 4.0 Routes (NEW)
+// ============================================================================
+
+// POST /smartlink/resolve - SmartLink resolution
+router.post('/smartlink/resolve', async (request) => {
+  const env = (request as any).__env as Env;
+  return handleResolve(request, env);
+});
+
+// POST /smartlink/stats - Statistics query
+router.post('/smartlink/stats', async (request) => {
+  const env = (request as any).__env as Env;
+  return handleStats(request, env);
+});
+
+// ============================================================================
+// Legacy Routes (MOVA 3.6) - kept for backwards compatibility
+// ============================================================================
 
 // Public route: smartlink redirect
 router.get('/s/:linkId', async (request, params) => {

@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.dev/schemas/ds.smartlink_config_v1.schema.json",
+  "title": "SmartLink Configuration v1",
+  "description": "Configuration for a single SmartLink: targets, routing rules, and metadata. Part of SmartLink MOVA 4.0.0 implementation.",
+  "type": "object",
+  "properties": {
+    "smartlink_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_\\-:.]+$",
+      "description": "Unique identifier for this smartlink. Used in URLs and as KV key."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable name for this smartlink."
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description of the smartlink's purpose or campaign."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "active",
+        "paused",
+        "archived"
+      ],
+      "description": "Current operational status of the smartlink."
+    },
+    "targets": {
+      "type": "array",
+      "description": "Array of available routing targets for this smartlink.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "description": "Unique identifier for this target within the smartlink."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Destination URL for this target."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label for analytics and admin UI."
+          },
+          "conditions": {
+            "type": "object",
+            "description": "Activation conditions for this target.",
+            "properties": {
+              "country": {
+                "description": "ISO country code(s) that activate this target.",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "language": {
+                "description": "Language code(s) (ISO 639-1) that activate this target.",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "device": {
+                "description": "Device type(s) that activate this target.",
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "enum": [
+                      "mobile",
+                      "tablet",
+                      "desktop"
+                    ]
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "mobile",
+                        "tablet",
+                        "desktop"
+                      ]
+                    },
+                    "minItems": 1
+                  }
+                ]
+              },
+              "utm": {
+                "type": "object",
+                "description": "UTM parameter matching conditions.",
+                "properties": {
+                  "source": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "medium": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "campaign": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "term": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  },
+                  "content": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "minItems": 1
+                      }
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Priority for this target (lower number = higher priority). Used when multiple targets match."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this target is currently enabled.",
+            "default": true
+          },
+          "valid_from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when this target becomes active."
+          },
+          "valid_until": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 timestamp when this target expires."
+          }
+        },
+        "required": [
+          "target_id",
+          "url"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "default_target_id": {
+      "type": "string",
+      "description": "Target ID to use when no conditions match. Must reference a target_id from the targets array."
+    },
+    "limits": {
+      "type": "object",
+      "description": "Optional operational limits for this smartlink.",
+      "properties": {
+        "max_clicks": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum number of clicks before the smartlink is automatically paused."
+        },
+        "valid_from": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this smartlink becomes active."
+        },
+        "valid_until": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this smartlink expires."
+        }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "type": "array",
+      "description": "Optional tags for categorization and filtering.",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes for internal documentation."
+    },
+    "meta": {
+      "type": "object",
+      "description": "Metadata for versioning and audit trail.",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Version number of this configuration."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of creation."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of last update."
+        },
+        "created_by": {
+          "type": "string",
+          "description": "Identifier of the user/system that created this config."
+        },
+        "updated_by": {
+          "type": "string",
+          "description": "Identifier of the user/system that last updated this config."
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "smartlink_id",
+    "status",
+    "targets",
+    "default_target_id"
+  ],
+  "additionalProperties": false
+}

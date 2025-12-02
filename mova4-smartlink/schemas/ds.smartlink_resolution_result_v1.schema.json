@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mova.dev/schemas/ds.smartlink_resolution_result_v1.schema.json",
+  "title": "SmartLink Resolution Result v1",
+  "description": "Result of resolving a single click through SmartLink routing logic. Part of SmartLink MOVA 4.0.0 implementation.",
+  "type": "object",
+  "properties": {
+    "smartlink_id": {
+      "type": "string",
+      "description": "The smartlink identifier that was resolved."
+    },
+    "resolved_target_id": {
+      "type": "string",
+      "description": "The target_id that was selected by the routing logic."
+    },
+    "resolved_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "The final destination URL."
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "OK",
+        "NO_MATCH",
+        "DEFAULT_USED",
+        "ERROR",
+        "RATE_LIMIT",
+        "EXPIRED",
+        "DISABLED"
+      ],
+      "description": "Overall outcome of the resolution attempt."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Short textual reason or code explaining the outcome."
+    },
+    "matched_conditions": {
+      "type": "object",
+      "description": "Summary of which conditions matched (for analytics and debugging).",
+      "properties": {
+        "country": {
+          "type": "boolean"
+        },
+        "language": {
+          "type": "boolean"
+        },
+        "device": {
+          "type": "boolean"
+        },
+        "utm": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "latency_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Time taken to resolve the target in milliseconds."
+    },
+    "executor_id": {
+      "type": "string",
+      "description": "Identifier of the executor/worker that performed the resolution (optional)."
+    },
+    "executor_version": {
+      "type": "string",
+      "description": "Version of the executor/worker implementation (optional)."
+    },
+    "debug_info": {
+      "type": "object",
+      "description": "Optional debug information (only included when debug mode is enabled).",
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "smartlink_id",
+    "outcome"
+  ],
+  "additionalProperties": false
+}

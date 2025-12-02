@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Hero } from './components/Hero';
 import { SmartlinkEditor } from './components/SmartlinkEditor';
 import { TestPanel } from './components/TestPanel';
 import './styles/App.css';
@@ -6,6 +7,7 @@ import './styles/App.css';
 function App() {
   const [activeTab, setActiveTab] = useState<'editor' | 'test'>('editor');
   const [linkId, setLinkId] = useState('spring_sale_2026');
+  const [triggerSave, setTriggerSave] = useState(0);
 
   return (
     <div className="app">
@@ -41,7 +43,15 @@ function App() {
       </nav>
 
       <main className="app-main">
-        {activeTab === 'editor' && <SmartlinkEditor linkId={linkId} />}
+        {activeTab === 'editor' && (
+          <>
+            <Hero 
+              hasSmartlink={true}
+              onSave={() => setTriggerSave(prev => prev + 1)}
+            />
+            <SmartlinkEditor linkId={linkId} triggerSave={triggerSave} />
+          </>
+        )}
         {activeTab === 'test' && <TestPanel linkId={linkId} />}
       </main>
 

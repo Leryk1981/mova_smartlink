@@ -1,0 +1,16 @@
+{
+  "smartlink_id": "spring_sale_2026",
+  "resolved_target_id": "de_tiktok_mobile",
+  "resolved_url": "https://example.de/spring/mobile-funnel?utm_content=tiktok_special",
+  "outcome": "OK",
+  "reason": "Matched target based on country=DE, device=mobile, utm.source=tiktok",
+  "matched_conditions": {
+    "country": true,
+    "language": false,
+    "device": true,
+    "utm": true
+  },
+  "latency_ms": 12.4,
+  "executor_id": "cf-worker-smartlink-fra-02",
+  "executor_version": "1.2.3"
+}

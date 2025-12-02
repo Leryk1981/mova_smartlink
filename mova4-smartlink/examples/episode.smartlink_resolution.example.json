@@ -1,0 +1,86 @@
+{
+  "episode_id": "ep_2026-03-15_14-23-45_abc123xyz",
+  "envelope_id": "env.smartlink_resolve_v1",
+  "envelope_instance_id": "req_2026-03-15_14-23-45_abc123xyz",
+  "timestamp_start": "2026-03-15T14:23:45.100Z",
+  "timestamp_end": "2026-03-15T14:23:45.127Z",
+  "input": {
+    "smartlink_id": "spring_sale_2026",
+    "timestamp": "2026-03-15T14:23:45.123Z",
+    "ip": "185.43.120.88",
+    "country": "DE",
+    "language": "de",
+    "device": "mobile",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1",
+    "referrer": "https://www.tiktok.com/@example_brand/video/1234567890",
+    "utm": {
+      "source": "tiktok",
+      "medium": "social",
+      "campaign": "spring_2026_mobile_blitz",
+      "content": "video_ad_v2"
+    },
+    "query_params": {
+      "promo": "SPRING20",
+      "lang": "de"
+    },
+    "edge_location": "FRA"
+  },
+  "config": {
+    "ref": "kv://smartlink_configs/spring_sale_2026",
+    "version": 3
+  },
+  "output": {
+    "smartlink_id": "spring_sale_2026",
+    "resolved_target_id": "de_tiktok_mobile",
+    "resolved_url": "https://example.de/spring/mobile-funnel?utm_content=tiktok_special",
+    "outcome": "OK",
+    "reason": "Matched target based on country=DE, device=mobile, utm.source=tiktok",
+    "matched_conditions": {
+      "country": true,
+      "language": false,
+      "device": true,
+      "utm": true
+    },
+    "latency_ms": 12.4,
+    "executor_id": "cf-worker-smartlink-fra-02",
+    "executor_version": "1.2.3"
+  },
+  "executor": {
+    "type": "cloudflare-worker",
+    "version": "1.2.3",
+    "instance_id": "cf-worker-smartlink-fra-02",
+    "location": "FRA"
+  },
+  "metrics": {
+    "latency_ms": 27.0,
+    "config_fetch_ms": 8.2,
+    "evaluation_ms": 4.4,
+    "retries": 0,
+    "cache_hit": true
+  },
+  "outcome": "success",
+  "outcome_details": {
+    "resolution_outcome": "OK",
+    "http_status": 302
+  },
+  "quality_signals": {
+    "user_bounced": false,
+    "conversion": true,
+    "anomaly_detected": false,
+    "confidence_score": 0.98
+  },
+  "notes": "High-confidence match for TikTok mobile traffic from Germany. User converted successfully.",
+  "analysis": {
+    "analyzed_at": "2026-03-15T15:00:00Z",
+    "analyzed_by": "pattern-analyzer-v1",
+    "insights": [
+      "TikTok mobile traffic from Germany shows 95% conversion rate",
+      "Optimal routing decision based on historical patterns"
+    ],
+    "tags": [
+      "high-conversion",
+      "tiktok-mobile",
+      "germany"
+    ]
+  }
+}

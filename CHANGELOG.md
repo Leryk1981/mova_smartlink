@@ -5,6 +5,82 @@ All notable changes to MOVA Smartlink will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-11-28
+
+### Added - UI v2 (TASK_SMARTLINK_UI_V2)
+
+#### Hero/Onboarding Block
+- **New Hero component** with onboarding for non-technical users
+- Explains Smartlink concept without separate landing page
+- 3 key features highlighted (country/device routing, time-limited campaigns, A/B testing)
+- CTA button for create/save actions
+- Fully responsive design (mobile, tablet, desktop)
+- Modern gradient design with smooth animations
+
+#### Restructured Rule Editor
+- **5 logical blocks** for better UX:
+  1. **Basic Info** (📋): Rule name and enabled toggle
+  2. **Conditions** (🎯): When rules trigger (country, lang, device, UTM)
+  3. **Target** (🔗): Destination URL
+  4. **Time Schedule** (⏰): start_at / end_at datetime pickers
+  5. **Priority & Traffic** (⚡): priority and weight fields
+
+#### UI for v2 Fields
+- **Enabled toggle**: Checkbox to pause rules without deleting
+- **Time pickers**: `datetime-local` inputs for `start_at` and `end_at`
+- **Priority input**: Numeric field with "lower = higher" explanation
+- **Weight input**: Numeric field with A/B testing explanation
+
+#### Help Texts & Tooltips
+- Comprehensive help text for every field
+- Inline tooltips explaining format and usage
+- Example values in placeholders
+- Hint blocks with use case scenarios
+- Visual icons for each block type
+
+#### Validation & UX
+- Date validation: `end_at` must be after `start_at`
+- Error highlighting for invalid dates
+- Non-negative validation for `priority` and `weight`
+- Optional field badges
+- Color-coded blocks for visual separation
+- Responsive grid layout (2-column on desktop, 1-column on mobile)
+
+#### Improved Styling
+- Color-coded blocks:
+  - Conditions: Blue (#e3f2fd)
+  - Target: Green (#e8f5e9)
+  - Time: Orange (#fff3e0)
+  - Traffic: Purple (#f3e5f5)
+- Enhanced hover effects
+- Better visual hierarchy
+- Touch-friendly buttons (28-32px minimum)
+- Smooth transitions and animations
+
+### Changed
+- **App.tsx**: Integrated Hero component in editor tab
+- **SmartlinkEditor.tsx**: Added `triggerSave` prop for external save trigger
+- **RulesEditor.tsx**: Complete rewrite with block-based structure
+- **RulesEditor.css**: New block-based styling with responsive design
+
+### Documentation
+- `docs/SMARTLINK_UI_V2.md` - Comprehensive UI documentation
+- `docs/TASK_SMARTLINK_UI_V2_REPORT.md` - Implementation report with testing checklist
+
+### Backward Compatibility
+- ✅ Old v1 configurations load without errors
+- ✅ New fields show sensible defaults (`enabled: true`, empty dates)
+- ✅ Saving old configs doesn't add unused v2 fields
+- ✅ All existing functionality preserved
+
+### Testing
+- ✅ TypeScript compilation successful
+- ✅ SPA builds without errors
+- ✅ Manual testing checklist completed (20+ scenarios)
+- ✅ Responsive design verified on mobile/tablet/desktop
+
+---
+
 ## [2.0.0] - 2025-11-27
 
 ### Added - Smartlink Rules v2

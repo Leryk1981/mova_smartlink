@@ -1,0 +1,76 @@
+{
+  "query": {
+    "smartlink_id": "spring_sale_2026",
+    "time_range": {
+      "from": "2026-03-01T00:00:00Z",
+      "to": "2026-03-31T23:59:59Z"
+    },
+    "group_by": [
+      "target_id",
+      "country"
+    ]
+  },
+  "summary": {
+    "total_clicks": 45678,
+    "successful_redirects": 44892,
+    "errors": 124,
+    "unique_countries": 12,
+    "unique_targets": 5,
+    "avg_latency_ms": 18.3
+  },
+  "rows": [
+    {
+      "dimensions": {
+        "target_id": "de_tiktok_mobile",
+        "country": "DE"
+      },
+      "metrics": {
+        "clicks": 18234,
+        "successful_redirects": 18145,
+        "errors": 43,
+        "avg_latency_ms": 14.2
+      }
+    },
+    {
+      "dimensions": {
+        "target_id": "email_spring_main",
+        "country": "US"
+      },
+      "metrics": {
+        "clicks": 12456,
+        "successful_redirects": 12398,
+        "errors": 23,
+        "avg_latency_ms": 22.1
+      }
+    },
+    {
+      "dimensions": {
+        "target_id": "de_default",
+        "country": "DE"
+      },
+      "metrics": {
+        "clicks": 8765,
+        "successful_redirects": 8721,
+        "errors": 19,
+        "avg_latency_ms": 15.8
+      }
+    },
+    {
+      "dimensions": {
+        "target_id": "global_fallback",
+        "country": "GB"
+      },
+      "metrics": {
+        "clicks": 6223,
+        "successful_redirects": 6128,
+        "errors": 39,
+        "avg_latency_ms": 21.5
+      }
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-01T10:00:00Z",
+    "query_latency_ms": 342.5,
+    "total_rows": 4
+  }
+}

@@ -8,7 +8,7 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "tail": "wrangler tail",
-    "test": "vitest",
+    "test": "vitest run",
     "lint": "tsc --noEmit"
   },
   "keywords": [
