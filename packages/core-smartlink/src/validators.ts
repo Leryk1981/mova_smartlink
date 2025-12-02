@@ -307,3 +307,6 @@ export function validateStatsReport(data: unknown): Result<SmartlinkStatsReport,
 
   return { ok: true, value: report };
 }
+
+// Aggregate export to prevent unused-value complaints in strict builds
+export const statsValidators = { validateStatsQuery, validateStatsReport };

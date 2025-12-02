@@ -5,18 +5,37 @@
 
 import {
   resolveSmartlink,
-  validateConfig,
-  validateClickContext,
-  validateResolutionResult,
   type SmartlinkConfig,
   type SmartlinkClickContext,
   type SmartlinkResolutionResult,
   type SmartlinkResolveEnvelope,
   type SmartlinkResolutionEpisode,
-} from '@mova/core-smartlink';
+} from '@mova/core-smartlink/runtime';
 import type { Env } from '../types.js';
 import { jsonResponse, errorResponse } from '../utils/response.js';
 import { getSmartlinkConfig, saveEpisode } from '../utils/kv-mova4.js';
+
+function hasNonEmptyTargets(config: SmartlinkConfig): boolean {
+  return Array.isArray(config.targets) && config.targets.length > 0;
+}
+
+function isValidInlineConfig(config: SmartlinkConfig): boolean {
+  return (
+    typeof config.smartlink_id === 'string' &&
+    config.smartlink_id.trim() !== '' &&
+    typeof config.default_target_id === 'string' &&
+    config.default_target_id.trim() !== '' &&
+    hasNonEmptyTargets(config)
+  );
+}
+
+function isValidClickContext(context: SmartlinkClickContext | undefined): context is SmartlinkClickContext {
+  return !!context && typeof context.smartlink_id === 'string' && context.smartlink_id.trim() !== '';
+}
+
+function isInlineConfig(config: SmartlinkResolveEnvelope['payload']['config']): config is SmartlinkConfig {
+  return !!config && !('config_ref' in config);
+}
 
 /**
  * Handle MOVA 4.0 smartlink resolution
@@ -48,16 +67,16 @@ export async function handleResolve(request: Request, env: Env): Promise<Respons
       return errorResponse('Invalid verb, expected "route"', 400);
     }
 
-    // Validate input (click context)
-    const contextValidation = validateClickContext(envelope.payload.input);
-    if (!contextValidation.ok) {
-      return errorResponse(
-        `Invalid click context: ${JSON.stringify(contextValidation.error)}`,
-        400
-      );
+    if (!envelope.payload || !envelope.payload.input) {
+      return errorResponse('Invalid payload: input is required', 400);
     }
 
-    const context = contextValidation.value;
+    // Basic input checks (avoid heavy validators in Worker)
+    if (!isValidClickContext(envelope.payload.input)) {
+      return errorResponse('Invalid click context: smartlink_id is required', 400);
+    }
+
+    const context = envelope.payload.input;
 
     // Get config (inline or by reference)
     let config: SmartlinkConfig;
@@ -73,16 +92,15 @@ export async function handleResolve(request: Request, env: Env): Promise<Respons
         }
 
         config = loadedConfig;
-      } else {
-        // Inline config
-        const configValidation = validateConfig(envelope.payload.config);
-        if (!configValidation.ok) {
-          return errorResponse(
-            `Invalid config: ${JSON.stringify(configValidation.error)}`,
-            400
-          );
+      } else if (isInlineConfig(envelope.payload.config)) {
+        // Inline config (lightweight checks only)
+        if (!isValidInlineConfig(envelope.payload.config)) {
+          return errorResponse('Invalid config: smartlink_id, default_target_id, and targets are required', 400);
         }
-        config = configValidation.value;
+
+        config = envelope.payload.config;
+      } else {
+        return errorResponse('Invalid config payload', 400);
       }
     } else {
       // Try to load config by smartlink_id from context
@@ -105,13 +123,6 @@ export async function handleResolve(request: Request, env: Env): Promise<Respons
     result.executor_id = executorId;
     result.executor_version = executorVersion;
     result.latency_ms = Date.now() - startTime;
-
-    // Validate result
-    const resultValidation = validateResolutionResult(result);
-    if (!resultValidation.ok) {
-      console.error('Invalid resolution result:', resultValidation.error);
-      // Continue anyway - internal validation issue
-    }
 
     // Create episode
     const episode = createEpisode(context, config, result, envelope, {
