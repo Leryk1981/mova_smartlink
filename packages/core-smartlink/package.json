@@ -9,11 +9,15 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./runtime": {
+      "import": "./dist/runtime.js",
+      "types": "./dist/runtime.d.ts"
     }
   },
   "scripts": {
     "build": "tsc",
-    "test": "tsx --test src/**/*.test.ts",
+    "test": "tsx --test src/resolve.test.ts src/evaluate.test.ts",
     "lint": "tsc --noEmit"
   },
   "keywords": [

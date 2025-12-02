@@ -2,7 +2,7 @@
  * Utilities for normalizing HTTP request context into SmartlinkContext
  */
 
-import type { SmartlinkContext } from '@mova/core-smartlink';
+import type { SmartlinkContext } from '@mova/core-smartlink/runtime';
 
 /**
  * Parse Accept-Language header and return primary language code

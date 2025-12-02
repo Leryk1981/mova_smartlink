@@ -5,7 +5,7 @@
 import type {
   SmartlinkConfig,
   SmartlinkResolutionEpisode,
-} from '@mova/core-smartlink';
+} from '@mova/core-smartlink/runtime';
 
 /**
  * KV key prefix for configs
