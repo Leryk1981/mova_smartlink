@@ -18,20 +18,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '18'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Build core-smartlink
-        run: npm run build
+        run: npm ci
 
       - name: Lint all packages
         run: npm run lint
 
       - name: Run unit tests
         run: npm test
+
+      - name: Build core-smartlink
+        run: npm run build
 
       - name: Verify MOVA core files unchanged
         run: |
@@ -53,11 +53,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '18'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build core-smartlink (dependency)
         run: npm run build
@@ -73,4 +73,3 @@ jobs:
             exit 1
           fi
           echo "✓ SPA built successfully"
-
