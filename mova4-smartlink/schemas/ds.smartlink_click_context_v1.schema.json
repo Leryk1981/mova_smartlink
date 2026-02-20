@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mova.dev/schemas/ds.smartlink_click_context_v1.schema.json",
   "title": "SmartLink Click Context v1",
-  "description": "Normalized context data for a single click through a SmartLink. Part of SmartLink MOVA 4.0.0 implementation.",
+  "description": "Normalized context data for a single click through a SmartLink. Part of SmartLink MOVA 5.0.0 compatibility profile.",
   "type": "object",
   "properties": {
     "smartlink_id": {

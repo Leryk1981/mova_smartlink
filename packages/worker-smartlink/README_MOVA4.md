@@ -1,5 +1,7 @@
 # Worker SmartLink — MOVA 4.0 Implementation Guide
 
+> Legacy document. Current guide: `README_MOVA5.md`.
+
 **Status:** 🚧 IN PROGRESS (Partial implementation for SL-EXEC-4.0)
 
 This document describes the MOVA 4.0 implementation for SmartLink Worker.

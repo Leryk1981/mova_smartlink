@@ -1,7 +1,7 @@
 # SmartLink Landing Page
 
 **Status:** Production-ready  
-**Version:** 1.0.0 (MOVA 4.0)  
+**Version:** 1.0.0 (MOVA 5.0)  
 **Tech:** React + TypeScript + Vite
 
 ## Overview
@@ -173,7 +173,7 @@ apps/smartlink-landing/
 ### Hero Section
 - Clear value proposition
 - Call-to-action (scroll to demo)
-- Visual badges (MOVA 4.0, Edge-first, Open Schema)
+- Visual badges (MOVA 5.0, Edge-first, Open Schema)
 
 ### Problem Section
 - 4 pain points SmartLink solves
@@ -190,7 +190,7 @@ apps/smartlink-landing/
 - Display result with outcome, URL, latency
 
 ### Tech Section
-- MOVA 4.0 explanation
+- MOVA 5.0 explanation
 - Self-hosted benefits
 - Links to docs and GitHub
 
@@ -314,8 +314,8 @@ npm run build # Try again
 
 ## References
 
-- [SmartLink 4.0 Specification](../../mova4-smartlink/docs/SMARTLINK_SPEC_4.0.md)
-- [Worker MOVA 4.0 Guide](../../packages/worker-smartlink/README_MOVA4.md)
+- [SmartLink 5.0 Compatibility Specification](../../mova4-smartlink/docs/SMARTLINK_SPEC_5.0.md)
+- [Worker MOVA 5.0 Guide](../../packages/worker-smartlink/README_MOVA5.md)
 - [Core Library](../../packages/core-smartlink/README.md)
 - [Tasks & Progress](../../docs/TASKS_SMARTLINK_V1.md)
 

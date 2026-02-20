@@ -1,5 +1,5 @@
 /**
- * Integration tests for SmartLink Worker MOVA 4.0 endpoints
+ * Integration tests for SmartLink Worker MOVA 5.0-compatible endpoints
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
@@ -80,7 +80,7 @@ const mockCtx: any = {
   passThroughOnException: () => {},
 };
 
-describe('Worker MOVA 4.0 Endpoints', () => {
+describe('Worker MOVA 5.0-Compatible Endpoints', () => {
   beforeEach(async () => {
     // Setup test config
     const testConfig = {

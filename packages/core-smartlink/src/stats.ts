@@ -1,5 +1,5 @@
 /**
- * Statistics aggregation for SmartLink MOVA 4.0.0
+ * Statistics aggregation for SmartLink MOVA 5.0.0 compatibility
  * 
  * Pure functions to build ds.smartlink_stats_report_v1 from episodes/clicks
  */

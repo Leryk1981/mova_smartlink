@@ -1,6 +1,7 @@
 /**
- * TypeScript types for SmartLink MOVA 4.0.0
+ * TypeScript types for SmartLink MOVA 5.0.0 compatibility
  * Generated from schemas in mova4-smartlink/schemas/
+ * Legacy file name is preserved for import-path stability.
  * 
  * These types correspond to:
  * - ds.smartlink_config_v1

@@ -1,6 +1,6 @@
 # @mova/core-smartlink
 
-Pure TypeScript library for SmartLink evaluation - MOVA 4.0.0
+Pure TypeScript library for SmartLink evaluation - MOVA 5.0.0 compatibility
 
 ## Overview
 
@@ -8,7 +8,7 @@ Pure TypeScript library for SmartLink evaluation - MOVA 4.0.0
 
 - **No I/O**: No HTTP requests, no database calls, no KV access
 - **Deterministic**: Same input → same output
-- **Type-safe**: Full TypeScript types from MOVA 4.0 schemas
+- **Type-safe**: Full TypeScript types from MOVA 5.0 schemas
 - **Validated**: JSON Schema validation via Ajv
 
 ## Installation
@@ -17,7 +17,7 @@ Pure TypeScript library for SmartLink evaluation - MOVA 4.0.0
 npm install @mova/core-smartlink
 ```
 
-## Usage (MOVA 4.0.0)
+## Usage (MOVA 5.0.0 compatibility)
 
 ### Basic Resolution
 
@@ -163,7 +163,7 @@ Validate resolution result against schema.
 
 ## Types
 
-All TypeScript types are generated from MOVA 4.0 JSON Schemas:
+All TypeScript types are generated from MOVA 5.0 JSON Schemas:
 
 ```typescript
 import type {
@@ -196,7 +196,7 @@ import type { SmartlinkCore, SmartlinkContext } from '@mova/core-smartlink';
 const decision = evaluate(context, core);
 ```
 
-**Recommended:** Migrate to MOVA 4.0 API (resolveSmartlink) for new projects.
+**Recommended:** Migrate to MOVA 5.0 API (resolveSmartlink) for new projects.
 
 ## Testing
 
@@ -211,7 +211,7 @@ Tests cover:
 
 ## Schema Compliance
 
-All functions comply with MOVA 4.0 schemas:
+All functions comply with MOVA 5.0 schemas:
 
 - `ds.smartlink_config_v1.schema.json`
 - `ds.smartlink_click_context_v1.schema.json`
@@ -224,7 +224,7 @@ Schema files: `../../mova4-smartlink/schemas/`
 
 ## Architecture
 
-This library is **Layer 1** (Executors) in the MOVA 4.0 architecture:
+This library is **Layer 1** (Executors) in the MOVA 5.0 architecture:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -259,7 +259,7 @@ This library is **Layer 1** (Executors) in the MOVA 4.0 architecture:
 
 ## Documentation
 
-- [SmartLink 4.0 Specification](../../mova4-smartlink/docs/SMARTLINK_SPEC_4.0.md)
+- [SmartLink 5.0 Compatibility Specification](../../mova4-smartlink/docs/SMARTLINK_SPEC_5.0.md)
 - [AI Rules](../../docs/AI_RULES_SMARTLINK.md)
 - [Migration Guide](../../MIGRATION_SUMMARY.md)
 
@@ -269,5 +269,5 @@ MIT
 
 ---
 
-**Version:** 2.0.0 (MOVA 4.0.0)  
+**Version:** 2.0.0 (MOVA 5.0.0 compatibility)  
 **Package:** @mova/core-smartlink

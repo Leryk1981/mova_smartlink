@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mova.dev/schemas/ds.episode_smartlink_resolution_v1.schema.json",
   "title": "SmartLink Resolution Episode v1",
-  "description": "Genetic layer: Episode record of a single SmartLink resolution execution. Captures input, output, metrics, and outcome for pattern memory and analysis. Part of SmartLink MOVA 4.0.0 implementation.",
+  "description": "Genetic layer: Episode record of a single SmartLink resolution execution. Captures input, output, metrics, and outcome for pattern memory and analysis. Part of SmartLink MOVA 5.0.0 compatibility profile.",
   "type": "object",
   "properties": {
     "episode_id": {

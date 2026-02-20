@@ -1,5 +1,5 @@
 /**
- * MOVA 4.0 stats handler
+ * MOVA 5.0-compatible stats handler
  * Implements env.smartlink_stats_get_v1 envelope
  */
 
@@ -24,7 +24,7 @@ function isValidStatsQuery(query: SmartlinkStatsGetEnvelope['payload']['input'])
 }
 
 /**
- * Handle MOVA 4.0 stats query
+ * Handle MOVA 5.0-compatible stats query
  * POST /smartlink/stats
  * 
  * Accepts: env.smartlink_stats_get_v1

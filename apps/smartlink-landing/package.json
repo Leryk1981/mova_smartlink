@@ -2,7 +2,7 @@
   "name": "@mova/smartlink-landing",
   "version": "1.0.0",
   "private": true,
-  "description": "SmartLink Landing Page - MOVA 4.0",
+  "description": "SmartLink Landing Page - MOVA 5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

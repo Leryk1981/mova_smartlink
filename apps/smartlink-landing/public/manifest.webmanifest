@@ -1,7 +1,7 @@
 {
   "name": "SmartLink - Smart Routing for Edge",
   "short_name": "SmartLink",
-  "description": "Один смарт-линк вместо десяти. Умная маршрутизация трафика на базе MOVA 4.0.",
+  "description": "Один смарт-линк вместо десяти. Умная маршрутизация трафика на базе MOVA 5.0.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

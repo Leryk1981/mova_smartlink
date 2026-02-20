@@ -1,7 +1,8 @@
 /**
- * JSON Schema validators for SmartLink MOVA 4.0.0
+ * JSON Schema validators for SmartLink MOVA 5.0.0 compatibility
  * 
  * Uses Ajv for validation against schemas from mova4-smartlink/schemas/
+ * (path kept for backward compatibility; contracts are MOVA 5.0 compatible)
  */
 
 import Ajv2020, { type ErrorObject, type ValidateFunction } from 'ajv/dist/2020.js';

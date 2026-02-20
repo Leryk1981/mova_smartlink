@@ -1,5 +1,5 @@
 /**
- * MOVA 4.0 resolve handler
+ * MOVA 5.0 resolve handler
  * Implements env.smartlink_resolve_v1 envelope
  */
 
@@ -38,7 +38,7 @@ function isInlineConfig(config: SmartlinkResolveEnvelope['payload']['config']): 
 }
 
 /**
- * Handle MOVA 4.0 smartlink resolution
+ * Handle MOVA 5.0 smartlink resolution
  * POST /smartlink/resolve
  * 
  * Accepts: env.smartlink_resolve_v1
@@ -47,7 +47,7 @@ function isInlineConfig(config: SmartlinkResolveEnvelope['payload']['config']): 
 export async function handleResolve(request: Request, env: Env): Promise<Response> {
   const startTime = Date.now();
   const executorId = `worker-${env.ENVIRONMENT || 'dev'}`;
-  const executorVersion = '2.0.0-mova4';
+  const executorVersion = '2.1.0-mova5';
 
   try {
     // Parse envelope

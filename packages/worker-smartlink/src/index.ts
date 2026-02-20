@@ -7,7 +7,7 @@
  * - PUT /api/smartlinks/:linkId - Update smartlink config
  * - DELETE /api/smartlinks/:linkId - Delete smartlink config
  * 
- * MOVA 4.0 Routes:
+ * MOVA 5.0 Routes:
  * - POST /smartlink/resolve - SmartLink resolution (env.smartlink_resolve_v1)
  * - POST /smartlink/stats - Statistics query (env.smartlink_stats_get_v1)
  */
@@ -28,7 +28,7 @@ import { errorResponse, corsResponse } from './utils/response.js';
 const router = new Router();
 
 // ============================================================================
-// MOVA 4.0 Routes (NEW)
+// MOVA 5.0 Routes (NEW)
 // ============================================================================
 
 // POST /smartlink/resolve - SmartLink resolution

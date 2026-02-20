@@ -20,7 +20,7 @@ export type {
   ContextField,
 } from './types.js';
 
-// MOVA 4.0.0 (runtime-safe)
+// MOVA 5.0.0 compatibility (runtime-safe)
 export type {
   SmartlinkClickContext,
   SmartlinkConfig,

@@ -1,6 +1,6 @@
 /**
  * API wrapper for SmartLink Worker
- * Communicates with MOVA 4.0 endpoints
+ * Communicates with MOVA 5.0 endpoints
  */
 
 // Get Worker URL from environment or use default
@@ -36,7 +36,7 @@ export interface DemoResolveResult {
 }
 
 /**
- * Build MOVA 4.0 envelope for resolve request
+ * Build MOVA 5.0 envelope for resolve request
  */
 function buildResolveEnvelope(input: DemoResolveInput) {
   const utm: any = {};

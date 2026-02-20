@@ -1,6 +1,7 @@
-# SmartLink — MOVA 4.0.0
+# SmartLink Domain Profile — MOVA 5.0.0 Compatibility
 
-This folder contains **SmartLink artifacts built on MOVA 4.0.0**.
+This folder contains SmartLink domain artifacts aligned with MOVA 5.0.0 contracts.
+Directory name `mova4-smartlink/` is preserved for backward path compatibility.
 
 SmartLink is a data-first smart routing system for edge computing environments.  
 It enables marketers to create context-aware link routing rules (by country, device, UTM params, etc.) without writing code.
@@ -9,15 +10,15 @@ It enables marketers to create context-aware link routing rules (by country, dev
 
 ```
 mova4-smartlink/
-  schemas/        — MOVA 4.0 JSON Schemas (ds.*, env.*, episodes)
+  schemas/        — SmartLink JSON Schemas (ds.*, env.*, episodes)
   examples/       — Valid instance examples
   docs/           — Specifications and guides
   README.md       — This file
 ```
 
-## MOVA 4.0.0 Architecture
+## MOVA 5.0.0 Compatibility Architecture
 
-SmartLink implements the full MOVA 4.0 stack:
+SmartLink implements the MOVA contract approach:
 
 ### Data Schemas (ds.*)
 
@@ -38,7 +39,7 @@ SmartLink implements the full MOVA 4.0 stack:
 
 ## Execution
 
-MOVA 4.0.0 **does not execute** anything.  
+MOVA **does not execute** anything.  
 Execution is handled by external systems (e.g., Cloudflare Workers, agents, etc.).
 
 The worker implementation lives in:
@@ -47,18 +48,19 @@ The worker implementation lives in:
 
 ## Documentation
 
-- `docs/SMARTLINK_SPEC_4.0.md` — Full specification
+- `docs/SMARTLINK_SPEC_5.0.md` — Current SmartLink profile specification (MOVA 5.0.0 compatible)
+- `docs/SMARTLINK_SPEC_4.0.md` — Historical 4.0 specification
 - `../docs/AI_RULES_SMARTLINK.md` — AI agent integration rules
 - `../README.md` — Project overview
 
-## Migration from 3.6
+## Migration lineage
 
 Legacy MOVA 3.6-based artifacts are in `../legacy/`.
-
-See `../mova_4_0_0_spec/docs/mova_4.0.0_migration_from_3.6.md` for migration guide.
+MOVA 4.0 core artifacts are archived in `../mova_4_0_0_spec/`.
+Canonical MOVA 5.0 core is published at `https://github.com/mova-compact/mova-spec`.
 
 ---
 
-**Version:** MOVA 4.0.0  
+**Version:** MOVA 5.0.0 compatibility profile  
 **Status:** Active development  
-**Task:** SL-CORE-4.0 (Migration to MOVA 4.0.0 + Genetic Layer)
+**Task:** Compatibility upgrade to MOVA 5.0.0 with stable runtime paths

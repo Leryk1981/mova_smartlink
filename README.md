@@ -1,9 +1,11 @@
-# SmartLink — MOVA 4.0 Smart Links
+# SmartLink — MOVA 5.0 Smart Links (Compatibility Upgrade)
 
-**Status:** Active | **Purpose:** Edge smart-link routing with MOVA 4.0.0 contracts | **Stack:** Node.js workspaces, Cloudflare Worker, React SPA
+**Status:** Active | **Purpose:** Edge smart-link routing with MOVA 5.0.0-compatible contracts | **Stack:** Node.js workspaces, Cloudflare Worker, React SPA
 
 ## What is SmartLink?
-SmartLink lets you publish one link that routes users to the right destination based on country, device, language, and UTM parameters. Routing rules are declarative JSON documents validated against MOVA 4.0.0 schemas and executed by a TypeScript core library and a Cloudflare Worker.
+SmartLink lets you publish one link that routes users to the right destination based on country, device, language, and UTM parameters. Routing rules are declarative JSON documents validated against MOVA contracts and executed by a TypeScript core library and a Cloudflare Worker.
+
+This repository now tracks MOVA 5.0.0 compatibility for SmartLink contracts.
 
 ## Quickstart (local)
 - Prerequisites: Node >=18, npm >=9.
@@ -16,14 +18,15 @@ SmartLink lets you publish one link that routes users to the right destination b
   - Admin SPA: `npm run dev --workspace=packages/spa-admin`
 
 ## Config and rules
-- MOVA 4.0.0 schemas and examples live in `mova4-smartlink/` (`schemas/`, `examples/`, `docs/SMARTLINK_SPEC_4.0.md`).
+- SmartLink schemas and examples live in `mova4-smartlink/` (`schemas/`, `examples/`, `docs/SMARTLINK_SPEC_5.0.md`).
 - The TypeScript evaluator is in `packages/core-smartlink/` with tests under `src/*.test.ts`.
 - Cloudflare Worker runtime lives in `packages/worker-smartlink/`; the admin UI is in `packages/spa-admin/`.
-- The npm package `@leryk1981/mova-spec@4.1.1` is currently inaccessible from this environment (npm 403); the repository uses the checked-in MOVA artifacts until registry access is available.
+- Canonical MOVA core lives in `https://github.com/mova-compact/mova-spec` (v5.0.0).
+- Folder name `mova4-smartlink/` is intentionally kept for path stability in existing integrations.
 
 ## Repository layout
 - `packages/` — Workspaces for the core library, worker, and admin SPA.
-- `mova4-smartlink/` — MOVA 4.0.0 schemas, examples, and spec docs.
+- `mova4-smartlink/` — Active SmartLink domain schemas/examples/spec (MOVA 5.0.0-compatible, legacy path preserved).
 - `legacy/` — Archived MOVA 3.6 artifacts and docs.
 - `docs/` — Operations guides, CI/CD notes, troubleshooting, and task reports.
 - `examples/` — SmartLink configuration samples.
@@ -37,7 +40,10 @@ SmartLink lets you publish one link that routes users to the right destination b
 - Detailed steps: see `QUICK_START_DEPLOYMENT.md` and `docs/CLOUDFLARE_PAGES_SETUP.md`.
 
 ## Additional docs
-- MOVA spec references: `mova4-smartlink/docs/SMARTLINK_SPEC_4.0.md`, `mova_4_0_0_spec/` core docs.
+- SmartLink profile spec: `mova4-smartlink/docs/SMARTLINK_SPEC_5.0.md`.
+- MOVA core spec: `https://github.com/mova-compact/mova-spec`.
+- MOVA 4.0 local archive: `mova_4_0_0_spec/` (history only).
+- Upgrade notes: `docs/MOVA_5_0_UPGRADE_STATUS.md`.
 - Troubleshooting and command references: `TROUBLESHOOTING.md`, `COMMANDS.md`, `SETUP.md`.
 - Project history and reports: `docs/AI_RULES_SMARTLINK.md`, `docs/TASKS_SMARTLINK_V1.md`, and CI/CD summaries under `docs/`.
 

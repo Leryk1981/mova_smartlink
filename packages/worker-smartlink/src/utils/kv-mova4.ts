@@ -1,5 +1,5 @@
 /**
- * KV utilities for MOVA 4.0 data structures
+ * KV utilities for MOVA 5.0-compatible SmartLink data structures
  */
 
 import type {

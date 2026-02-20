@@ -9,7 +9,7 @@ export function TechSection() {
         <h2 className="section-title">Для тих, хто хоче зрозуміти глибше</h2>
 
         <div className="tech-content">
-          <p className="tech-intro">SmartLink побудований на <strong>MOVA 4.0</strong> — відкритому data-first контракті:</p>
+          <p className="tech-intro">SmartLink побудований на <strong>MOVA 5.0</strong> — відкритому data-first контракті:</p>
 
           <ul className="tech-list">
             <li>
@@ -50,12 +50,12 @@ export function TechSection() {
               📂 GitHub репозиторій
             </a>
             <a
-              href="/docs/SMARTLINK_SPEC_4.0.md"
+              href="/docs/SMARTLINK_SPEC_5.0.md"
               className="tech-link"
               target="_blank"
               rel="noopener noreferrer"
             >
-              📖 Специфікація MOVA 4.0
+              📖 Специфікація MOVA 5.0
             </a>
           </div>
         </div>

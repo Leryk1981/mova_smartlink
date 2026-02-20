@@ -31,7 +31,7 @@ export function Footer() {
 
           <div className="footer-info">
             <div className="footer-links">
-              <a href="/docs/SMARTLINK_SPEC_4.0.md" target="_blank" rel="noopener noreferrer">
+              <a href="/docs/SMARTLINK_SPEC_5.0.md" target="_blank" rel="noopener noreferrer">
                 Документація
               </a>
               <a href="https://github.com/your-repo/mova_smartlink" target="_blank" rel="noopener noreferrer">
@@ -44,9 +44,9 @@ export function Footer() {
 
             <div className="footer-credits">
               <p>
-                Зроблено на <strong>MOVA 4.0</strong> · Розгорнуто на <strong>Cloudflare</strong>
+                Зроблено на <strong>MOVA 5.0</strong> · Розгорнуто на <strong>Cloudflare</strong>
               </p>
-              <p className="footer-version">SmartLink v2.0.0 (MOVA 4.0.0)</p>
+              <p className="footer-version">SmartLink v2.0.0 (MOVA 5.0.0 compatibility)</p>
             </div>
           </div>
         </div>

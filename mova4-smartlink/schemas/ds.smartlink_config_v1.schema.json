@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://mova.dev/schemas/ds.smartlink_config_v1.schema.json",
   "title": "SmartLink Configuration v1",
-  "description": "Configuration for a single SmartLink: targets, routing rules, and metadata. Part of SmartLink MOVA 4.0.0 implementation.",
+  "description": "Configuration for a single SmartLink: targets, routing rules, and metadata. Part of SmartLink MOVA 5.0.0 compatibility profile.",
   "type": "object",
   "properties": {
     "smartlink_id": {

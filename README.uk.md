@@ -1,6 +1,6 @@
-# SmartLink — MOVA 4.0 Smart Links (UA)
+# SmartLink — MOVA 5.0 Smart Links (UA)
 
-**Статус:** Активний | **Призначення:** Смарт-посилання на основі MOVA 4.0.0 з маршрутизацією за країною, пристроєм, мовою та UTM.
+**Статус:** Активний | **Призначення:** Смарт-посилання на основі MOVA 5.0.0-сумісних контрактів з маршрутизацією за країною, пристроєм, мовою та UTM.
 
 ## Швидкий старт локально
 - Вимоги: Node >=18, npm >=9.
@@ -14,6 +14,8 @@
 
 ## Ключові посилання
 - README (EN): `README.md`
-- MOVA 4.0.0 схеми та приклади: `mova4-smartlink/` (`schemas/`, `examples/`, `docs/SMARTLINK_SPEC_4.0.md`).
+- SmartLink схеми та приклади: `mova4-smartlink/` (`schemas/`, `examples/`, `docs/SMARTLINK_SPEC_5.0.md`).
+- Канонічне MOVA core: `https://github.com/mova-compact/mova-spec` (v5.0.0).
+- Ім'я папки `mova4-smartlink/` залишено для сумісності існуючих інтеграцій.
 - Деплой: `QUICK_START_DEPLOYMENT.md`, `docs/CLOUDFLARE_PAGES_SETUP.md`.
-- Примітка: пакет `@leryk1981/mova-spec@4.1.1` недоступний з цього середовища (npm 403), використовуються вбудовані артефакти.
+- Локальний `mova_4_0_0_spec/` збережено як історичний архів.

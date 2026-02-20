@@ -1,5 +1,5 @@
 /**
- * SmartLink resolution logic for MOVA 4.0.0
+ * SmartLink resolution logic for MOVA 5.0.0 compatibility
  * 
  * Implements ds.smartlink_config_v1 → ds.smartlink_resolution_result_v1
  * 
@@ -190,7 +190,7 @@ function isSmartlinkActive(config: SmartlinkConfig, now: Date): boolean {
 /**
  * Resolve smartlink click to a target URL
  * 
- * Implements MOVA 4.0 resolution logic:
+ * Implements MOVA 5.0 resolution logic:
  * 1. Check if smartlink is active (status, time limits)
  * 2. Filter active targets (enabled, time-based)
  * 3. Sort by priority (lower = higher priority)

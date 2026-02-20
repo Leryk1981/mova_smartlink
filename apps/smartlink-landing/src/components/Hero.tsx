@@ -27,7 +27,7 @@ export function Hero() {
         </button>
 
         <div className="hero-badges">
-          <span className="badge">🚀 MOVA 4.0</span>
+          <span className="badge">🚀 MOVA 5.0</span>
           <span className="badge">⚡ Edge-first</span>
           <span className="badge">🔒 Відкрита схема</span>
         </div>

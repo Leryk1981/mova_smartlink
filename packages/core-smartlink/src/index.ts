@@ -1,7 +1,7 @@
 /**
  * @mova/core-smartlink v2.0.0
  * 
- * Pure TypeScript library for SmartLink evaluation - MOVA 4.0.0
+ * Pure TypeScript library for SmartLink evaluation - MOVA 5.0.0 compatibility
  * No HTTP, no Cloudflare dependencies - just core logic.
  */
 
@@ -20,7 +20,7 @@ export type {
   ContextField,
 } from './types.js';
 
-// MOVA 4.0.0 (recommended)
+// MOVA 5.0.0 compatibility (recommended)
 export * from './types-mova4.js';
 export * from './validators.js';
 export * from './resolve.js';
