@@ -81,6 +81,31 @@ jobs:
       - name: Install Wrangler
         run: npm install -g wrangler@latest
 
+      - name: Ensure Pages project exists
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          PROJECT="${{ secrets.CLOUDFLARE_PAGES_PROJECT }}"
+          echo "🔎 Ensuring Pages project exists: ${PROJECT}"
+
+          set +e
+          CREATE_OUTPUT=$(wrangler pages project create "${PROJECT}" --production-branch=main 2>&1)
+          CREATE_EXIT=$?
+          set -e
+
+          if [ "$CREATE_EXIT" -eq 0 ]; then
+            echo "✅ Pages project created: ${PROJECT}"
+          else
+            if echo "$CREATE_OUTPUT" | grep -Eiq "already exists|already a project"; then
+              echo "ℹ️ Pages project already exists: ${PROJECT}"
+            else
+              echo "❌ Failed to create Pages project"
+              echo "$CREATE_OUTPUT"
+              exit "$CREATE_EXIT"
+            fi
+          fi
+
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
